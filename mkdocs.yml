@@ -1,0 +1,7 @@
+site_name: drf-subscription
+repo_url: https://github.com/gmork2/drf-subscription
+theme: readthedocs
+nav:
+  - Home: 'index.md'
+
+dev_addr: !!python/object/apply:os.getenv ["MKDOCS_DEV_ADDR"]
