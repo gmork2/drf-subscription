@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  drf-subscription:
+    build: .
+    image: drf-subscription:latest
+    command: >
+      bash -c "python manage.py migrate
+      && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/src
+    ports:
+      - "8000:8000"
+    container_name: drf-subscription
+    tty: true
