@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
 
@@ -12,6 +13,19 @@ class AbstractEventMixin(models.Model):
         verbose_name=_('Description'),
         blank=True,
     )
+
+    def clean(self, *args, **kwargs):
+        """
+        Checks that the start date is not later than the end date.
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        if self.start > self.end:
+            raise ValidationError(
+                _('The start of the event cannot be after the end.')
+            )
 
     class Meta:
         abstract = True
