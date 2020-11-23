@@ -110,7 +110,7 @@ class Resource(BaseGenericObjectResource):
         help_text=_('the subscription plan for these cost details'),
         on_delete=models.CASCADE
     )
-    data = models.TextField(
+    content_object_fields = models.TextField(
         blank=True,
         help_text=_(
             'Warning: this field may contain sensitive information'
