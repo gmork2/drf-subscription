@@ -49,3 +49,9 @@ class SubscriptionEvent(AbstractEventMixin):
     pass
 
 
+class Resource(BaseGenericObjectResource):
+    subscription_event = models.ForeignKey(
+        SubscriptionEvent,
+        help_text=_('the subscription plan for these cost details'),
+        on_delete=models.CASCADE
+    )
