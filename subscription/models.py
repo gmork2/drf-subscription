@@ -4,6 +4,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+from .managers import ResourceManager, SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
+
 
 class AbstractEventMixin(models.Model):
     start = models.DateTimeField(verbose_name=_('Start date'))
@@ -55,7 +57,7 @@ class BaseGenericObjectResource(models.Model):
 
 
 class Subscription(BaseGenericObjectResource):
-    pass
+    objects = SubscriptionManager()
 
 
 class SubscriptionLine(AbstractEventMixin):
@@ -63,6 +65,7 @@ class SubscriptionLine(AbstractEventMixin):
         Subscription,
         on_delete=models.CASCADE
     )
+    objects = SubscriptionLineManager()
 
 
 class SubscriptionEvent(AbstractEventMixin):
@@ -70,6 +73,7 @@ class SubscriptionEvent(AbstractEventMixin):
         SubscriptionLine,
         on_delete=models.CASCADE
     )
+    objects = SubscriptionEventManager()
 
 
 class Resource(BaseGenericObjectResource):
@@ -78,3 +82,4 @@ class Resource(BaseGenericObjectResource):
         help_text=_('the subscription plan for these cost details'),
         on_delete=models.CASCADE
     )
+    objects = ResourceManager()
