@@ -1,8 +1,17 @@
+from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 
 
 class SubscriptionQuerySet(models.QuerySet):
-    pass
+    def is_generic(self):
+        try:
+            _meta = getattr(self.model, '_meta')
+            return bool(_meta.get_field('object_pk'))
+        except FieldDoesNotExist:
+            return False
+
+    def active_lines(self):
+        pass
 
 
 class SubscriptionManager(models.Manager):
