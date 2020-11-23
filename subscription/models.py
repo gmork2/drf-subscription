@@ -86,4 +86,17 @@ class Resource(BaseGenericObjectResource):
         help_text=_('the subscription plan for these cost details'),
         on_delete=models.CASCADE
     )
+    data = models.TextField(
+        blank=True,
+        help_text=_(
+            'Warning: this field may contain sensitive information'
+            'from other models'
+        ),
+    )
+    callback = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True,
+        help_text=_('Dotted path to callable object')
+    )
     objects = ResourceManager()
