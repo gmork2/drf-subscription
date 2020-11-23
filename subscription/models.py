@@ -4,6 +4,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext as _
 
 
+class AbstractEventMixin(models.Model):
+    start = models.DateTimeField(verbose_name=_('Start date'))
+    end = models.DateTimeField(verbose_name=_('End date'))
+    description = models.TextField(
+        max_length=2048,
+        verbose_name=_('Description'),
+        blank=True,
+    )
+
+
 class BaseGenericObjectResource(models.Model):
     content_type = models.ForeignKey(
         ContentType,
@@ -29,3 +39,13 @@ class BaseGenericObjectResource(models.Model):
 
 class Subscription(BaseGenericObjectResource):
     pass
+
+
+class SubscriptionLine(AbstractEventMixin):
+    pass
+
+
+class SubscriptionEvent(AbstractEventMixin):
+    pass
+
+
