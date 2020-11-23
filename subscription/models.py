@@ -13,6 +13,9 @@ class AbstractEventMixin(models.Model):
         blank=True,
     )
 
+    class Meta:
+        abstract = True
+
 
 class BaseGenericObjectResource(models.Model):
     content_type = models.ForeignKey(
