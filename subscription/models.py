@@ -69,6 +69,10 @@ class SubscriptionLine(AbstractEventMixin):
 
 
 class SubscriptionEvent(AbstractEventMixin):
+    recurrence = models.DurationField(
+        null=True,
+        blank=True
+    )
     subscription_line = models.ForeignKey(
         SubscriptionLine,
         on_delete=models.CASCADE
