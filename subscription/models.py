@@ -79,6 +79,22 @@ class SubscriptionEvent(AbstractEventMixin):
     )
     objects = SubscriptionEventManager()
 
+    def clean(self):
+        """
+
+        :return:
+        """
+        if not self.end and self.recurrence:
+            raise ValidationError(
+                _('The end date is mandatory if there is recurrence')
+            )
+        if self.recurrence and (self.start + self.recurrence < self.end):
+            raise ValidationError(
+                _('The start date of the new interval cannot be contained '
+                  'in the current interval')
+            )
+        super().clean()
+
 
 class Resource(BaseGenericObjectResource):
     subscription_event = models.ForeignKey(
