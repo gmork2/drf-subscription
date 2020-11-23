@@ -57,7 +57,15 @@ class BaseGenericObjectResource(models.Model):
 
 
 class Subscription(BaseGenericObjectResource):
+    name = models.CharField(
+        max_length=128,
+        help_text=_('Subscription name')
+    )
+    active = models.BooleanField(default=True)
     objects = SubscriptionManager()
+
+    def active_lines(self):
+        pass
 
 
 class SubscriptionLine(AbstractEventMixin):
