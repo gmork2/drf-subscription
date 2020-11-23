@@ -42,11 +42,17 @@ class Subscription(BaseGenericObjectResource):
 
 
 class SubscriptionLine(AbstractEventMixin):
-    pass
+    subscription = models.ForeignKey(
+        Subscription,
+        on_delete=models.CASCADE
+    )
 
 
 class SubscriptionEvent(AbstractEventMixin):
-    pass
+    subscription_line = models.ForeignKey(
+        SubscriptionLine,
+        on_delete=models.CASCADE
+    )
 
 
 class Resource(BaseGenericObjectResource):
