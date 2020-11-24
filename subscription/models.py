@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 from .managers import ResourceManager, SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
@@ -111,6 +112,19 @@ class SubscriptionEvent(AbstractEventMixin):
                   'in the current interval')
             )
         super().clean()
+
+    def __iadd__(self, duration: timezone.timedelta):
+        """
+        Adds a duration value to the start and end date.
+
+        :param duration:
+        :return:
+        """
+        if self.end:
+            self.end = self.end + duration
+        self.start = self.start + duration
+
+        return self
 
 
 class Resource(BaseGenericObjectResource):
