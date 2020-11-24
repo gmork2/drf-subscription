@@ -1,3 +1,5 @@
+from typing import Generator
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -112,6 +114,25 @@ class SubscriptionEvent(AbstractEventMixin):
                   'in the current interval')
             )
         super().clean()
+
+    @property
+    def events(self) -> Generator['SubscriptionEvent', None, None]:
+        """
+        Yields future subscription events whose start date is later
+        than the current one.
+
+        :return:
+        """
+        while self.start > timezone.now():
+            params = {
+                'start': self.start,
+                'end': self.end,
+                'subscription_line': self.subscription_line
+            }
+            yield SubscriptionEvent(**params)
+            if not (self.end and self.recurrence):
+                break
+            self.__iadd__(self.recurrence)
 
     def __iadd__(self, duration: timezone.timedelta):
         """
