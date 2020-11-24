@@ -83,3 +83,5 @@ class ResourceManager(models.Manager):
                 id__in=self.values_list('content_type__id', flat=True)
             )
         ]
+
+

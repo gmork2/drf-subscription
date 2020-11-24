@@ -3,6 +3,16 @@ from rest_framework import serializers
 from .models import Subscription, SubscriptionEvent, SubscriptionLine
 
 
+class GenericSerializer(serializers.ModelSerializer):
+    @classmethod
+    def from_model(cls, model_class, content_object_fields, *args, **kwargs):
+        cls.Meta = type('Meta', (), {
+            'model': model_class,
+            'fields': content_object_fields
+        })
+        return cls(*args, **kwargs)
+
+
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
