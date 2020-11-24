@@ -1,4 +1,5 @@
 from typing import Generator
+import ast
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -6,6 +7,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
+
+from rest_framework import serializers
 
 from .managers import ResourceManager, SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
@@ -186,3 +189,20 @@ class Resource(BaseGenericObjectResource):
         help_text=_('Dotted path to callable object')
     )
     objects = ResourceManager()
+
+    def get_values_from_related_object(self, model_class: models.Model) -> dict:
+        """
+        Returns a dict with the values of the fields of the related
+        model.
+
+        :param model_class:
+        :return:
+        """
+        from .serializers import GenericSerializer
+
+        return GenericSerializer.from_model(
+            model_class,
+            [*ast.literal_eval(self.content_object_fields)]
+            if self.content_object_fields else serializers.ALL_FIELDS,
+            self.content_object
+        ).data
