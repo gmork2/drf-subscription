@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Subscription, SubscriptionEvent, SubscriptionLine
+from .models import Subscription, SubscriptionEvent, SubscriptionLine, Resource
 
 
 class GenericSerializer(serializers.ModelSerializer):
@@ -28,4 +28,10 @@ class SubscriptionLineSerializer(serializers.ModelSerializer):
 class SubscriptionEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubscriptionEvent
+        fields = '__all__'
+
+
+class ResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resource
         fields = '__all__'
