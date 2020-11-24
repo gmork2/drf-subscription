@@ -1,6 +1,25 @@
 from django.contrib import admin
 
-from .models import Resource
+from .models import Subscription, Resource
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'content_object', 'active')
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'active',)
+        }),
+        ('Resource', {
+            'description': 'Resource form',
+            'classes': ('wide',),
+            'fields': ('content_type', 'object_pk',),   # 'content_object',
+        }),
+    )
+
+    @staticmethod
+    def content_object(obj):
+        return obj.content_object
 
 
 @admin.register(Resource)
