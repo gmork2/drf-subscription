@@ -1,7 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
 
-from .models import SubscriptionLine, SubscriptionEvent
-from .serializers import SubscriptionLineSerializer, SubscriptionEventSerializer
+from .models import Subscription, SubscriptionLine, SubscriptionEvent
+from .serializers import (
+    SubscriptionSerializer, SubscriptionLineSerializer, SubscriptionEventSerializer
+)
+
+
+class SubscriptionViewSet(ModelViewSet):
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
 
 
 class SubscriptionLineViewSet(ModelViewSet):
