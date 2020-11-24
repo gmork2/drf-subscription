@@ -13,7 +13,7 @@ class SubscriberMiddleware:
         :param get_response:
         """
         self.get_response = get_response
-        resource_class = apps.get_model('drf_subscription', 'Resource')
+        resource_class = apps.get_model('subscription', 'Resource')
 
         resource_class.objects.connect(
             post_save,
