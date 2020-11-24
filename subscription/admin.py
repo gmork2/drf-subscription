@@ -1,6 +1,16 @@
 from django.contrib import admin
 
-from .models import Subscription, Resource
+from .models import Subscription, SubscriptionLine, Resource
+
+
+@admin.register(SubscriptionLine)
+class SubscriptionLineAdmin(admin.ModelAdmin):
+    list_display = ('id', 'start', 'end', 'subscription')
+    fieldsets = (
+        (None, {
+            'fields': ('start', 'end', 'subscription')
+        }),
+    )
 
 
 @admin.register(Subscription)
