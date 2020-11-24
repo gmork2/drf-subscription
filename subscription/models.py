@@ -67,6 +67,15 @@ class Subscription(BaseGenericObjectResource):
     def active_lines(self):
         pass
 
+    def __str__(self):
+        related_object = super().__str__()
+        return '%s (%s): %s -> %s' % (
+            self.__class__.__name__,
+            self.pk,
+            self.name,
+            related_object
+        )
+
 
 class SubscriptionLine(AbstractEventMixin):
     subscription = models.ForeignKey(
