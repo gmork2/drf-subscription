@@ -1,8 +1,13 @@
-from typing import List
+from typing import List, Callable
+import logging
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
+
+from .signals import default_receiver
+
+logger = logging.getLogger(__name__)
 
 
 class SubscriptionQuerySet(models.QuerySet):
@@ -84,4 +89,9 @@ class ResourceManager(models.Manager):
             )
         ]
 
-
+    def connect(self, signal, receiver: Callable = default_receiver) -> None:
+        for model_class in self.related_models():
+            signal.connect(receiver, sender=model_class)
+            logger.info(
+                f'Signal {signal}: {model_class} -> {default_receiver}'
+            )
