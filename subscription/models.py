@@ -7,6 +7,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
 from rest_framework import serializers
 
@@ -206,6 +207,28 @@ class Resource(BaseGenericObjectResource):
             if self.content_object_fields else serializers.ALL_FIELDS,
             self.content_object
         ).data
+
+    def clean(self):
+        """
+
+        :return:
+        """
+        if self.content_object is None:
+            missing = f'{self.content_type} id={self.object_pk}'
+            raise ValidationError(
+                _(f'Referenced object <{missing}> does not exist')
+            )
+        try:
+            if self.callback:
+                obj = import_string(self.callback)
+                if not callable(obj):
+                    raise ValidationError(
+                        _(f'{obj} object is not callable')
+                    )
+        except (ImportError, TypeError, AttributeError) as e:
+            raise ValidationError(
+                _(f'Invalid dotted path: "{self.callback}"')
+            )
 
     def __str__(self):
         related_object = super().__str__()
