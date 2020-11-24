@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 
@@ -12,6 +13,15 @@ class SubscriptionQuerySet(models.QuerySet):
 
     def active_lines(self):
         pass
+
+    def subscribable(self, obj: models.Model) -> bool:
+        try:
+            ct = ContentType.objects.get_for_model(obj.__class__)
+            self.get(object_pk=obj, content_type=ct)
+        except self.model.DoesNotExist:
+            return True
+
+        return False
 
 
 class SubscriptionManager(models.Manager):
