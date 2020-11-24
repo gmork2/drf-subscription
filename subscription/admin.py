@@ -1,16 +1,6 @@
 from django.contrib import admin
 
-from .models import Subscription, SubscriptionLine, Resource
-
-
-@admin.register(SubscriptionLine)
-class SubscriptionLineAdmin(admin.ModelAdmin):
-    list_display = ('id', 'start', 'end', 'subscription')
-    fieldsets = (
-        (None, {
-            'fields': ('start', 'end', 'subscription')
-        }),
-    )
+from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
 
 
 @admin.register(Subscription)
@@ -30,6 +20,26 @@ class SubscriptionAdmin(admin.ModelAdmin):
     @staticmethod
     def content_object(obj):
         return obj.content_object
+
+
+@admin.register(SubscriptionLine)
+class SubscriptionLineAdmin(admin.ModelAdmin):
+    list_display = ('id', 'start', 'end', 'subscription')
+    fieldsets = (
+        (None, {
+            'fields': ('start', 'end', 'subscription')
+        }),
+    )
+
+
+@admin.register(SubscriptionEvent)
+class SubscriptionEventAdmin(admin.ModelAdmin):
+    list_display = ('id', 'start', 'end', 'recurrence', 'subscription_line')
+    fieldsets = (
+        (None, {
+            'fields': ('start', 'end', 'recurrence', 'subscription_line')
+        }),
+    )
 
 
 @admin.register(Resource)
