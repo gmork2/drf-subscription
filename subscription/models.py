@@ -206,3 +206,12 @@ class Resource(BaseGenericObjectResource):
             if self.content_object_fields else serializers.ALL_FIELDS,
             self.content_object
         ).data
+
+    def __str__(self):
+        related_object = super().__str__()
+        return '%s (%s): %s -> %s' % (
+            self.__class__.__name__,
+            self.pk,
+            self.subscription_event.subscription_line.subscription.name,
+            related_object
+        )
