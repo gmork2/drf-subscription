@@ -4,6 +4,7 @@ import ast
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
@@ -12,6 +13,7 @@ from django.utils.module_loading import import_string
 from rest_framework import serializers
 
 from .managers import ResourceManager, SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
+from .signals import default_receiver
 
 
 class AbstractEventMixin(models.Model):
@@ -229,6 +231,19 @@ class Resource(BaseGenericObjectResource):
             raise ValidationError(
                 _(f'Invalid dotted path: "{self.callback}"')
             )
+
+    def save(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        model_class = self.content_type.model_class()
+        self.content_object_fields = self.get_values_from_related_object(model_class)
+        if self._state.adding:
+            post_save.connect(default_receiver, sender=model_class)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         related_object = super().__str__()
