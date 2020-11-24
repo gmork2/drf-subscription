@@ -1,3 +1,5 @@
+from typing import List
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
@@ -73,3 +75,11 @@ class ResourceManager(models.Manager):
             content_type=ct,
             object_pk=str(instance.id)
         )
+
+    def related_models(self, **kwargs) -> List[models.Model]:
+        return [
+            ct.model_class()
+            for ct in ContentType.objects.filter(
+                id__in=self.values_list('content_type__id', flat=True)
+            )
+        ]
