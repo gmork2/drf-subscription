@@ -232,6 +232,20 @@ class Resource(BaseGenericObjectResource):
                 _(f'Invalid dotted path: "{self.callback}"')
             )
 
+        if self.content_object_fields:
+            try:
+                fields = ast.literal_eval(self.content_object_fields)
+                if not isinstance(fields, dict):
+                    raise ValidationError(
+                        _(f'malformed node or string: "{self.content_object_fields}"')
+                    )
+                # for f in fields.keys():
+                #     if f in self.content_object.get_fields():
+                #         pass
+
+            except ValueError as e:
+                raise ValidationError(e)
+
     def save(self, *args, **kwargs):
         """
 
