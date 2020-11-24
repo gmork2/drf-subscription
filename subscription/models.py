@@ -147,6 +147,15 @@ class SubscriptionEvent(AbstractEventMixin):
 
         return self
 
+    def __str__(self):
+        return '%s (%s): %s [%s - %s]' % (
+            self.__class__.__name__,
+            self.pk,
+            self.subscription_line.subscription.name,
+            self.start,
+            self.end
+        )
+
 
 class Resource(BaseGenericObjectResource):
     subscription_event = models.ForeignKey(
