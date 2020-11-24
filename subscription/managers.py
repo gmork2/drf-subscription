@@ -66,3 +66,10 @@ class ResourceManager(models.Manager):
             self.model,
             using=self._db
         )
+
+    def related_object(self, instance: models.Model):
+        ct = ContentType.objects.get_for_model(instance)
+        return self.filter(
+            content_type=ct,
+            object_pk=str(instance.id)
+        )
