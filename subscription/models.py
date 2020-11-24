@@ -87,6 +87,15 @@ class SubscriptionLine(AbstractEventMixin):
     )
     objects = SubscriptionLineManager()
 
+    def __str__(self):
+        return '%s (%s): %s [%s - %s]' % (
+            self.__class__.__name__,
+            self.pk,
+            self.subscription.name,
+            self.start,
+            self.end
+        )
+
 
 class SubscriptionEvent(AbstractEventMixin):
     recurrence = models.DurationField(
