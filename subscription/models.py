@@ -18,7 +18,11 @@ from .signals import default_receiver
 
 class AbstractEventMixin(models.Model):
     start = models.DateTimeField(verbose_name=_('Start date'))
-    end = models.DateTimeField(verbose_name=_('End date'))
+    end = models.DateTimeField(
+        verbose_name=_('End date'),
+        null=True,
+        blank=True
+    )
     description = models.TextField(
         max_length=2048,
         verbose_name=_('Description'),
