@@ -37,7 +37,7 @@ class AbstractEventMixin(models.Model):
         :param kwargs:
         :return:
         """
-        if self.start > self.end:
+        if self.end and self.start > self.end:
             raise ValidationError(
                 _('The start of the event cannot be after the end.')
             )
