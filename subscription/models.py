@@ -175,7 +175,6 @@ class SubscriptionEvent(AbstractEventMixin):
 class Resource(BaseGenericObjectResource):
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
-        help_text=_('the subscription plan for these cost details'),
         on_delete=models.CASCADE
     )
     content_object_fields = models.TextField(
