@@ -210,6 +210,7 @@ class Resource(BaseGenericObjectResource):
             self.content_object
         ).data
 
+    # TODO: Implement validators
     def clean(self):
         """
 
@@ -239,10 +240,16 @@ class Resource(BaseGenericObjectResource):
                     raise ValidationError(
                         _(f'malformed node or string: "{self.content_object_fields}"')
                     )
-                # for f in fields.keys():
-                #     if f in self.content_object.get_fields():
-                #         pass
-
+                model_class = self.content_type.model_class()
+                model_fields = [
+                    f.name
+                    for f in model_class._meta.get_fields(include_hidden=True)
+                ]
+                unknown_fields = set(fields.keys()) - set(model_fields)
+                if unknown_fields:
+                    raise ValidationError(
+                        _(f'Unknow related fields: {unknown_fields}')
+                    )
             except ValueError as e:
                 raise ValidationError(e)
 
