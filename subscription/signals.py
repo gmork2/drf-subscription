@@ -1,9 +1,15 @@
+from typing import Type
 import warnings
 
+from django.db import models
 from django.utils.module_loading import import_string
 
 
-def default_receiver(sender, instance, **kwargs):
+def default_receiver(
+        sender: Type[models.Model],
+        instance: models.Model,
+        **kwargs
+) -> None:
     """
     Converts resource dotted path to callable object and call it
     with current context.
