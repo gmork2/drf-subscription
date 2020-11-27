@@ -177,6 +177,8 @@ class SubscriptionEvent(AbstractEventMixin):
 
 
 class Resource(BaseGenericObjectResource):
+    INCLUDE_HIDDEN = True
+
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
         on_delete=models.CASCADE
@@ -214,7 +216,6 @@ class Resource(BaseGenericObjectResource):
             self.content_object
         ).data
 
-    # TODO: Implement validators
     def clean(self):
         """
 
@@ -233,15 +234,17 @@ class Resource(BaseGenericObjectResource):
                     raise ValidationError(
                         _(f'malformed node or string: "{self.content_object_fields}"')
                     )
-                model_class = self.content_type.model_class()
+                cls = self.content_type.model_class()
                 model_fields = [
                     f.name
-                    for f in model_class._meta.get_fields(include_hidden=True)
+                    for f in cls._meta.get_fields(
+                        include_hidden=self.INCLUDE_HIDDEN
+                    )
                 ]
-                unknown_fields = set(fields.keys()) - set(model_fields)
-                if unknown_fields:
+                unknown = set(fields.keys()) - set(model_fields)
+                if unknown:
                     raise ValidationError(
-                        _(f'Unknow related fields: {unknown_fields}')
+                        _(f'Unknown related fields: {unknown}')
                     )
             except ValueError as e:
                 raise ValidationError(e)
