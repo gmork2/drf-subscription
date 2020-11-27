@@ -24,6 +24,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriptionLine)
 class SubscriptionLineAdmin(admin.ModelAdmin):
+    date_hierarchy = 'start'
     list_display = ('id', 'start', 'end', 'subscription')
     fieldsets = (
         (None, {
@@ -34,6 +35,7 @@ class SubscriptionLineAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriptionEvent)
 class SubscriptionEventAdmin(admin.ModelAdmin):
+    date_hierarchy = 'start'
     list_display = ('id', 'start', 'end', 'recurrence', 'subscription_line')
     fieldsets = (
         (None, {
