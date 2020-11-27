@@ -8,12 +8,12 @@ from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
-from django.utils.module_loading import import_string
 
 from rest_framework import serializers
 
 from .managers import ResourceManager, SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 from .signals import default_receiver
+from .validators import CallBackValidator
 
 
 class AbstractEventMixin(models.Model):
@@ -192,7 +192,8 @@ class Resource(BaseGenericObjectResource):
         max_length=256,
         null=True,
         blank=True,
-        help_text=_('Dotted path to callable object')
+        help_text=_('Dotted path to callable object'),
+        validators=[CallBackValidator()]
     )
     objects = ResourceManager()
 
@@ -223,17 +224,6 @@ class Resource(BaseGenericObjectResource):
             missing = f'{self.content_type} id={self.object_pk}'
             raise ValidationError(
                 _(f'Referenced object <{missing}> does not exist')
-            )
-        try:
-            if self.callback:
-                obj = import_string(self.callback)
-                if not callable(obj):
-                    raise ValidationError(
-                        _(f'{obj} object is not callable')
-                    )
-        except (ImportError, TypeError, AttributeError) as e:
-            raise ValidationError(
-                _(f'Invalid dotted path: "{self.callback}"')
             )
 
         if self.content_object_fields:
