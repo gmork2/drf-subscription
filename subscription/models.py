@@ -186,8 +186,8 @@ class Resource(BaseGenericObjectResource):
     content_object_fields = models.TextField(
         blank=True,
         help_text=_(
-            'Warning: this field may contain sensitive information'
-            'from other models'
+            'key-value pair with the values of the current instance of the'
+            'related model'
         ),
     )
     callback = models.CharField(
