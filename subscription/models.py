@@ -197,6 +197,7 @@ class Resource(BaseGenericObjectResource):
         help_text=_('Dotted path to callable object'),
         validators=[CallBackValidator()]
     )
+    active = models.BooleanField(default=True)
     objects = ResourceManager()
 
     def get_values_from_related_object(self, model_class: models.Model) -> dict:
