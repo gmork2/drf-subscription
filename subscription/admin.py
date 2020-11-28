@@ -49,6 +49,7 @@ class SubscriptionEventAdmin(admin.ModelAdmin):
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
+    readonly_fields = ('content_object_fields',)
     list_display = ('id', 'subscription_event', 'content_object_fields', 'callback', 'content_object')
     list_filter = ('content_type',)     # 'active'
     fieldsets = (
