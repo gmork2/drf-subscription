@@ -54,11 +54,11 @@ class ResourceAdmin(admin.ModelAdmin):
     list_filter = ('content_type',)     # 'active'
     fieldsets = (
         (None, {
-            'fields': ('subscription_event', 'content_object_fields', 'callback')
+            'fields': ('subscription_event', 'callback')
         }),
         ('Resource', {
             'description': 'Resource form',
             'classes': ('wide',),
-            'fields': ('content_type', 'object_pk',),  # 'content_object',
+            'fields': ('content_type', 'object_pk', 'content_object_fields'),  # 'content_object',
         }),
     )
