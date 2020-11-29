@@ -5,6 +5,7 @@ from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
     list_display = ('id', 'name', 'content_object', 'active')
     list_filter = ('content_type', 'active')
     fieldsets = (
@@ -25,30 +26,33 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriptionLine)
 class SubscriptionLineAdmin(admin.ModelAdmin):
+    search_fields = ('description',)
     date_hierarchy = 'start'
     list_display = ('id', 'start', 'end', 'subscription')
     list_filter = ('start', 'end')
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'subscription')
+            'fields': ('start', 'end', 'subscription',)
         }),
     )
 
 
 @admin.register(SubscriptionEvent)
 class SubscriptionEventAdmin(admin.ModelAdmin):
+    search_fields = ('description',)
     date_hierarchy = 'start'
     list_display = ('id', 'start', 'end', 'recurrence', 'subscription_line')
     list_filter = ('start', 'end',)
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'recurrence', 'subscription_line')
+            'fields': ('start', 'end', 'recurrence', 'subscription_line',)
         }),
     )
 
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
+    search_fields = ('callback',)
     readonly_fields = ('content_object_fields',)
     list_display = ('id', 'subscription_event', 'content_object_fields', 'callback', 'content_object')
     list_filter = ('content_type', 'active')
