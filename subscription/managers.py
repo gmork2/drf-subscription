@@ -88,10 +88,12 @@ class ResourceManager(models.Manager):
         )
 
     def related_models(self, **kwargs) -> List[models.Model]:
+        qs = self.get_queryset()
+        qs = qs.is_active()
         return [
             ct.model_class()
             for ct in ContentType.objects.filter(
-                id__in=self.values_list('content_type__id', flat=True)
+                id__in=qs.values_list('content_type__id', flat=True)
             )
         ]
 
