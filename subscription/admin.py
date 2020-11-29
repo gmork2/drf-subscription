@@ -52,6 +52,7 @@ class SubscriptionEventAdmin(admin.ModelAdmin):
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
+    sortable_by = ('id', 'subscription_event', 'callback', 'content_object')
     search_fields = ('callback',)
     readonly_fields = ('content_object_fields',)
     list_display = ('id', 'subscription_event', 'content_object_fields', 'callback', 'content_object')
