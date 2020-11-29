@@ -88,6 +88,9 @@ class ResourceManager(models.Manager):
         )
 
     def related_models(self, **kwargs) -> List[models.Model]:
+        """
+        Returns a list with each of the models related to any resource.
+        """
         qs = self.get_queryset()
         qs = qs.is_active()
         return [
