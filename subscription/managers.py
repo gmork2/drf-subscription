@@ -64,7 +64,13 @@ class SubscriptionEventManager(models.Manager):
 
 
 class ResourceQuerySet(models.QuerySet):
-    pass
+    def is_active(self):
+        return self.filter(
+            active=True,
+            subscription_event__subscription_line__subscription__active=True
+        ).select_related(
+            'subscription_event__subscription_line__subscription'
+        )
 
 
 class ResourceManager(models.Manager):
