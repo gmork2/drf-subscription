@@ -32,7 +32,7 @@ class SubscriptionLineAdmin(admin.ModelAdmin):
     list_filter = ('start', 'end')
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'subscription',)
+            'fields': ('start', 'end', 'subscription', 'description',)
         }),
     )
 
@@ -45,7 +45,7 @@ class SubscriptionEventAdmin(admin.ModelAdmin):
     list_filter = ('start', 'end',)
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'recurrence', 'subscription_line',)
+            'fields': ('start', 'end', 'recurrence', 'subscription_line', 'description',)
         }),
     )
 
