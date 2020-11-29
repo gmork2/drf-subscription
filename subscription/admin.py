@@ -1,6 +1,22 @@
 from django.contrib import admin
+from django.utils.translation import gettext as _
+from django.core.handlers.wsgi import WSGIRequest
 
+from .managers import SubscriptionQuerySet
 from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
+
+
+def activate(
+        modeladmin: 'SubscriptionAdmin',
+        request: WSGIRequest,
+        queryset: SubscriptionQuerySet
+):
+    for instance in queryset:
+        instance.activate()
+    modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
+
+
+activate.short_description = "Activate a subscription"
 
 
 @admin.register(Subscription)
@@ -18,6 +34,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk',),   # 'content_object',
         }),
     )
+    actions = (activate,)
 
     @staticmethod
     def content_object(obj):
