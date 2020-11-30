@@ -31,7 +31,8 @@ class AbstractEventMixin(models.Model):
 
     def clean(self, *args, **kwargs):
         """
-        Checks that the start date is not later than the end date.
+        Checks that the start date is not later than the end date (as
+        long as it exists).
 
         :param args:
         :param kwargs:
