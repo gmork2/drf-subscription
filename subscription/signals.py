@@ -21,7 +21,7 @@ def default_receiver(
     """
     from .models import Resource
 
-    queryset = Resource.objects.related_object(instance)
+    queryset = Resource.objects.related_objects(instance)
     for resource in queryset:
         try:
             cb = import_string(resource.callback)

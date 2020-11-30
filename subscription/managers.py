@@ -72,7 +72,7 @@ class ResourceQuerySet(models.QuerySet):
             'subscription_event__subscription_line__subscription'
         )
 
-    def related_object(self, instance: models.Model) -> models.QuerySet:
+    def related_objects(self, instance: models.Model) -> models.QuerySet:
         ct = ContentType.objects.get_for_model(instance)
         return self.filter(
             content_type=ct,
