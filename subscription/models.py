@@ -193,7 +193,11 @@ class Resource(BaseGenericObjectResource):
 
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        help_text=_(
+            'Subscription event that determines when the callback can'
+            'be called'
+        ),
     )
     content_object_fields = models.TextField(
         blank=True,
