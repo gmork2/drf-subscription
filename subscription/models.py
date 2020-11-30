@@ -42,6 +42,15 @@ class AbstractEventMixin(models.Model):
                 _('The start of the event cannot be after the end.')
             )
 
+    def __contains__(self, date: timezone.datetime):
+        if not isinstance(date, timezone.datetime):
+            raise TypeError(
+                f'argument "{date}" must be an instance of datetime'
+            )
+        return \
+            self.start >= date if not self.end \
+            else self.start >= date > self.end
+
     class Meta:
         abstract = True
 
