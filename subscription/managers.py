@@ -72,19 +72,19 @@ class ResourceQuerySet(models.QuerySet):
             'subscription_event__subscription_line__subscription'
         )
 
-    def related_objects(self, instance: models.Model) -> models.QuerySet:
-        ct = ContentType.objects.get_for_model(instance)
-        return self.filter(
-            content_type=ct,
-            object_pk=str(instance.id)
-        )
-
 
 class ResourceManager(models.Manager):
     def get_queryset(self) -> ResourceQuerySet:
         return ResourceQuerySet(
             self.model,
             using=self._db
+        )
+
+    def related_objects(self, instance: models.Model) -> models.QuerySet:
+        ct = ContentType.objects.get_for_model(instance)
+        return self.filter(
+            content_type=ct,
+            object_pk=str(instance.id)
         )
 
     def related_models(self, **kwargs) -> List[models.Model]:
