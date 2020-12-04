@@ -112,7 +112,7 @@ class ResourceManager(models.Manager):
                 f'Signal {signal}: {model_class} -> {default_receiver}'
             )
 
-    def disconnect(
+    def disconnect_all(
         self,
         signal,
         receiver: Callable = default_receiver
