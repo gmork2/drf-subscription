@@ -15,7 +15,7 @@ class SubscriberMiddleware:
         self.get_response = get_response
         resource_class = apps.get_model('subscription', 'Resource')
 
-        resource_class.objects.connect(
+        resource_class.objects.connect_all(
             post_save,
             default_receiver
         )

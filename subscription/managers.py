@@ -101,7 +101,7 @@ class ResourceManager(models.Manager):
             )
         ]
 
-    def connect(self, signal, receiver: Callable = default_receiver) -> None:
+    def connect_all(self, signal, receiver: Callable = default_receiver) -> None:
         """
         Connects signal with all related models to any existing active
         resource.
@@ -116,7 +116,7 @@ class ResourceManager(models.Manager):
         self,
         signal,
         receiver: Callable = default_receiver
-    ) -> Dict[Type[models.Model, bool]]:
+    ) -> Dict[Type[models.Model], bool]:
         """
         Disconnects signal for the provided related models.
         """
