@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import List, Callable, Dict, Type
 import logging
 
 from django.contrib.contenttypes.models import ContentType
@@ -107,3 +107,16 @@ class ResourceManager(models.Manager):
             logger.info(
                 f'Signal {signal}: {model_class} -> {default_receiver}'
             )
+
+    @staticmethod
+    def disconnect(
+        signal,
+        related_models: list[models.Model],
+        receiver: Callable = default_receiver
+    ) -> Dict[Type[models.Model, bool]]:
+
+        return {
+            model_class: signal.disconnect(receiver, sender=model_class)
+            for model_class in related_models
+        }
+
