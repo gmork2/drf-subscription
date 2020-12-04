@@ -22,6 +22,21 @@ def activate(
 activate.short_description = "Activate a subscription"
 
 
+def connect(
+    modeladmin: 'SubscriptionAdmin',
+    request: WSGIRequest,
+    queryset: ResourceQuerySet
+) -> None:
+    for instance in queryset:
+        model_class = instance.content_type.model_class()
+        post_save.connect(default_receiver, sender=model_class)
+
+    modeladmin.message_user(request, _('Done!'))
+
+
+connect.short_description = "Connect signals"
+
+
 def disconnect(
     modeladmin: 'SubscriptionAdmin',
     request: WSGIRequest,
@@ -105,4 +120,4 @@ class ResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk', 'content_object_fields'),  # 'content_object',
         }),
     )
-    actions = (disconnect,)
+    actions = (connect, disconnect,)
