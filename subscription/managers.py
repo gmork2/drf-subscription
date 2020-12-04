@@ -102,6 +102,10 @@ class ResourceManager(models.Manager):
         ]
 
     def connect(self, signal, receiver: Callable = default_receiver) -> None:
+        """
+        Connects signal with all related models to any existing active
+        resource.
+        """
         for model_class in self.related_models():
             signal.connect(receiver, sender=model_class)
             logger.info(
