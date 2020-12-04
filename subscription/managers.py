@@ -118,7 +118,9 @@ class ResourceManager(models.Manager):
         related_models: list[models.Model],
         receiver: Callable = default_receiver
     ) -> Dict[Type[models.Model, bool]]:
-
+        """
+        Disconnects signal for the provided related models.
+        """
         return {
             model_class: signal.disconnect(receiver, sender=model_class)
             for model_class in related_models
