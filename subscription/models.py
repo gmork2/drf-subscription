@@ -14,7 +14,7 @@ from rest_framework import serializers
 
 from .managers import ResourceManager, SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 from .signals import default_receiver
-from .validators import CallBackValidator
+from .validators import ImportCallBackValidator
 
 
 class AbstractEventMixin(models.Model):
@@ -224,7 +224,7 @@ class Resource(BaseGenericObjectResource):
         null=True,
         blank=True,
         help_text=_('Dotted path to callable object'),
-        validators=[CallBackValidator()]
+        validators=[ImportCallBackValidator()]
     )
     active = models.BooleanField(default=True)
     objects = ResourceManager()

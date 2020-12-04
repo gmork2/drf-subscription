@@ -6,7 +6,7 @@ from django.utils.module_loading import import_string
 
 
 @deconstructible
-class CallBackValidator(object):
+class ImportCallBackValidator(object):
     message = _('Invalid path: "{}"')
     code = "invalid"
 
