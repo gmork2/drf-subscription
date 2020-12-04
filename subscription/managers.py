@@ -112,10 +112,9 @@ class ResourceManager(models.Manager):
                 f'Signal {signal}: {model_class} -> {default_receiver}'
             )
 
-    @staticmethod
     def disconnect(
+        self,
         signal,
-        related_models: list[Type[models.Model]],
         receiver: Callable = default_receiver
     ) -> Dict[Type[models.Model, bool]]:
         """
@@ -123,5 +122,5 @@ class ResourceManager(models.Manager):
         """
         return {
             model_class: signal.disconnect(receiver, sender=model_class)
-            for model_class in related_models
+            for model_class in self.related_models()
         }
