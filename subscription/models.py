@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
+from django.conf import settings
 
 from rest_framework import serializers
 
@@ -102,6 +103,9 @@ class Subscription(BaseGenericObjectResource):
             related_object
         )
 
+    class Meta:
+        abstract = 'subscription' not in settings.INSTALLED_APPS
+
 
 class SubscriptionLine(AbstractEventMixin):
     subscription = models.ForeignKey(
@@ -118,6 +122,9 @@ class SubscriptionLine(AbstractEventMixin):
             self.start,
             self.end
         )
+
+    class Meta:
+        abstract = 'subscription' not in settings.INSTALLED_APPS
 
 
 class SubscriptionEvent(AbstractEventMixin):
@@ -189,6 +196,9 @@ class SubscriptionEvent(AbstractEventMixin):
             self.start,
             self.end
         )
+
+    class Meta:
+        abstract = 'subscription' not in settings.INSTALLED_APPS
 
 
 class Resource(BaseGenericObjectResource):
@@ -290,3 +300,6 @@ class Resource(BaseGenericObjectResource):
             self.subscription_event.subscription_line.subscription.name,
             related_object
         )
+
+    class Meta:
+        abstract = 'subscription' not in settings.INSTALLED_APPS
