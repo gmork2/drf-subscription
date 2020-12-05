@@ -73,6 +73,12 @@ class ResourceQuerySet(models.QuerySet):
         )
 
     def related_objects(self, instance: models.Model) -> models.QuerySet:
+        """
+        Returns all related resource objects with the instance.
+
+        :param instance:
+        :return:
+        """
         ct = ContentType.objects.get_for_model(instance)
         return self.filter(
             content_type=ct,
