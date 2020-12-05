@@ -31,7 +31,7 @@ class SubscriptionQuerySet(models.QuerySet):
 
         return False
 
-    def is_active(self) -> models.QuerySet:
+    def active(self) -> models.QuerySet:
         return self.filter(
             active=True,
         )
@@ -76,7 +76,7 @@ class SubscriptionEventManager(models.Manager):
 
 
 class ResourceQuerySet(models.QuerySet):
-    def is_active(self) -> models.QuerySet:
+    def active(self) -> models.QuerySet:
         return self.filter(
             active=True,
             subscription_event__subscription_line__subscription__active=True
@@ -111,7 +111,7 @@ class ResourceManager(models.Manager):
         active resource.
         """
         qs = self.get_queryset()
-        qs = qs.is_active()
+        qs = qs.active()
         return [
             ct.model_class()
             for ct in ContentType.objects.filter(
