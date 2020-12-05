@@ -9,7 +9,7 @@ from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
 from .signals import default_receiver, callback_receiver
 
 
-def activate(
+def activate_subscription(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
         queryset: SubscriptionQuerySet
@@ -19,10 +19,10 @@ def activate(
     modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
 
 
-activate.short_description = _("Activate a subscription")
+activate_subscription.short_description = _("Activate a subscription")
 
 
-def call(
+def run_callback(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
         queryset: SubscriptionQuerySet
@@ -36,10 +36,10 @@ def call(
         modeladmin.message_user(request, _('Done!'))
 
 
-call.short_description = _("Run callback")
+run_callback.short_description = _("Run callback")
 
 
-def connect(
+def connect_resource(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
         queryset: ResourceQuerySet
@@ -51,10 +51,10 @@ def connect(
     modeladmin.message_user(request, _('Done!'))
 
 
-connect.short_description = _("Connect signals")
+connect_resource.short_description = _("Connect signals")
 
 
-def disconnect(
+def disconnect_resource(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
         queryset: ResourceQuerySet
@@ -69,7 +69,7 @@ def disconnect(
             )
 
 
-disconnect.short_description = _("Disconnect signals")
+disconnect_resource.short_description = _("Disconnect signals")
 
 
 @admin.register(Subscription)
@@ -87,7 +87,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk',),  # 'content_object',
         }),
     )
-    actions = (activate,)
+    actions = (activate_subscription,)
 
     @staticmethod
     def content_object(obj):
@@ -137,4 +137,4 @@ class ResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk', 'content_object_fields'),  # 'content_object',
         }),
     )
-    actions = (call, connect, disconnect,)
+    actions = (run_callback, connect_resource, disconnect_resource,)
