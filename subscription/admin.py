@@ -19,7 +19,7 @@ def activate(
     modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
 
 
-activate.short_description = "Activate a subscription"
+activate.short_description = _("Activate a subscription")
 
 
 def call(
@@ -36,7 +36,7 @@ def call(
         modeladmin.message_user(request, _('Done!'))
 
 
-call.short_description = "Run callback"
+call.short_description = _("Run callback")
 
 
 def connect(
@@ -51,7 +51,7 @@ def connect(
     modeladmin.message_user(request, _('Done!'))
 
 
-connect.short_description = "Connect signals"
+connect.short_description = _("Connect signals")
 
 
 def disconnect(
@@ -69,7 +69,7 @@ def disconnect(
             )
 
 
-disconnect.short_description = "Disconnect signals"
+disconnect.short_description = _("Disconnect signals")
 
 
 @admin.register(Subscription)
