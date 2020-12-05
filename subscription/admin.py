@@ -22,6 +22,19 @@ def activate_subscription(
 activate_subscription.short_description = _("Activate a subscription")
 
 
+def deactivate_subscription(
+        modeladmin: 'SubscriptionAdmin',
+        request: WSGIRequest,
+        queryset: SubscriptionQuerySet
+):
+    for instance in queryset:
+        instance.deactivate()
+    modeladmin.message_user(request, _('Total deactivated: %s' % queryset.count()))
+
+
+deactivate_subscription.short_description = _("Deactivate a subscription")
+
+
 def run_callback(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
