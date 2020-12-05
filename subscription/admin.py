@@ -6,7 +6,7 @@ from django.contrib.messages import constants
 
 from .managers import SubscriptionQuerySet, ResourceQuerySet
 from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
-from .signals import default_receiver
+from .signals import default_receiver, callback_receiver
 
 
 def activate(
@@ -20,6 +20,23 @@ def activate(
 
 
 activate.short_description = "Activate a subscription"
+
+
+def call(
+        modeladmin: 'SubscriptionAdmin',
+        request: WSGIRequest,
+        queryset: SubscriptionQuerySet
+):
+    for instance in queryset:
+        callback_receiver(
+            sender=modeladmin.__class__,
+            instance=instance,
+            queryset=queryset
+        )
+        modeladmin.message_user(request, _('Done!'))
+
+
+call.short_description = "Run callback"
 
 
 def connect(
@@ -120,4 +137,4 @@ class ResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk', 'content_object_fields'),  # 'content_object',
         }),
     )
-    actions = (connect, disconnect,)
+    actions = (call, connect, disconnect,)

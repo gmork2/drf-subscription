@@ -1,15 +1,11 @@
-from typing import Type
+from typing import Type, Union
 import warnings
 
 from django.db import models
 from django.utils.module_loading import import_string
 
 
-def callback_receiver(
-        sender: Type[models.Model],
-        instance,
-        **kwargs
-):
+def callback_receiver(sender, instance, **kwargs):
     try:
         cb = import_string(instance.callback)
         if callable(cb):
