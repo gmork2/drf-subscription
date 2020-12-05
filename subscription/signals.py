@@ -5,6 +5,28 @@ from django.db import models
 from django.utils.module_loading import import_string
 
 
+def callback_receiver(
+        sender: Type[models.Model],
+        instance,
+        **kwargs
+):
+    try:
+        cb = import_string(instance.callback)
+        if callable(cb):
+            cb(**{
+                'sender': sender,
+                'instance': instance,
+                **kwargs
+            })
+        else:
+            warnings.warn(
+                f'Resource {instance} has an invalid callback value: {instance.callback}',
+                ImportWarning
+            )
+    except (ImportError, TypeError, AttributeError):
+        pass
+
+
 def default_receiver(
         sender: Type[models.Model],
         instance: models.Model,
@@ -23,19 +45,5 @@ def default_receiver(
 
     queryset = Resource.objects.all().related_objects(instance)
     for resource in queryset:
-        try:
-            cb = import_string(resource.callback)
-            if callable(cb):
-                cb(queryset=queryset, **{
-                    'sender': sender,
-                    'instance': instance,
-                    **kwargs
-                })
-            else:
-                warnings.warn(
-                    f'Resource {resource} has an invalid callback value: {resource.callback}',
-                    ImportWarning
-                )
-        except (ImportError, TypeError, AttributeError):
-            pass
+        callback_receiver(sender, resource, queryset=queryset, **kwargs)
         resource.save()
