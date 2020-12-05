@@ -10,9 +10,9 @@ from .signals import default_receiver
 
 
 def activate(
-    modeladmin: 'SubscriptionAdmin',
-    request: WSGIRequest,
-    queryset: SubscriptionQuerySet
+        modeladmin: 'SubscriptionAdmin',
+        request: WSGIRequest,
+        queryset: SubscriptionQuerySet
 ):
     for instance in queryset:
         instance.activate()
@@ -23,9 +23,9 @@ activate.short_description = "Activate a subscription"
 
 
 def connect(
-    modeladmin: 'SubscriptionAdmin',
-    request: WSGIRequest,
-    queryset: ResourceQuerySet
+        modeladmin: 'SubscriptionAdmin',
+        request: WSGIRequest,
+        queryset: ResourceQuerySet
 ) -> None:
     for instance in queryset:
         model_class = instance.content_type.model_class()
@@ -38,9 +38,9 @@ connect.short_description = "Connect signals"
 
 
 def disconnect(
-    modeladmin: 'SubscriptionAdmin',
-    request: WSGIRequest,
-    queryset: ResourceQuerySet
+        modeladmin: 'SubscriptionAdmin',
+        request: WSGIRequest,
+        queryset: ResourceQuerySet
 ) -> None:
     for instance in queryset:
         model_class = instance.content_type.model_class()
@@ -67,7 +67,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         ('Resource', {
             'description': 'Resource form',
             'classes': ('wide',),
-            'fields': ('content_type', 'object_pk',),   # 'content_object',
+            'fields': ('content_type', 'object_pk',),  # 'content_object',
         }),
     )
     actions = (activate,)

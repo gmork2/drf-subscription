@@ -119,9 +119,9 @@ class ResourceManager(models.Manager):
             )
 
     def disconnect_all(
-        self,
-        signal,
-        receiver: Callable = default_receiver
+            self,
+            signal,
+            receiver: Callable = default_receiver
     ) -> Dict[Type[models.Model], bool]:
         """
         Disconnects signal with all related models to any existing active
