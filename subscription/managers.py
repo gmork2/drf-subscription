@@ -4,6 +4,7 @@ import logging
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
+from django.utils import timezone
 
 from .signals import default_receiver
 
@@ -18,7 +19,7 @@ class SubscriptionQuerySet(models.QuerySet):
         except FieldDoesNotExist:
             return False
 
-    def active_lines(self):
+    def with_active_lines(self):
         pass
 
     def subscribable(self, obj: models.Model) -> bool:
@@ -45,7 +46,13 @@ class SubscriptionManager(models.Manager):
 
 
 class SubscriptionLineQuerySet(models.QuerySet):
-    pass
+    def is_finished(self, subscription) -> models.QuerySet:
+        now = timezone.now()
+        return self.filter(
+            subscription=subscription,
+            start__lte=now,
+            end__gt=now
+        )
 
 
 class SubscriptionLineManager(models.Manager):
