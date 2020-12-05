@@ -30,6 +30,11 @@ class SubscriptionQuerySet(models.QuerySet):
 
         return False
 
+    def is_active(self) -> models.QuerySet:
+        return self.filter(
+            active=True,
+        )
+
 
 class SubscriptionManager(models.Manager):
     def get_queryset(self) -> SubscriptionQuerySet:
