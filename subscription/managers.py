@@ -19,9 +19,6 @@ class SubscriptionQuerySet(models.QuerySet):
         except FieldDoesNotExist:
             return False
 
-    def with_active_lines(self):
-        pass
-
     def subscribable(self, obj: models.Model) -> bool:
         try:
             ct = ContentType.objects.get_for_model(obj.__class__)
@@ -44,14 +41,16 @@ class SubscriptionManager(models.Manager):
             using=self._db
         )
 
+    def with_active_lines(self):
+        pass
+
 
 class SubscriptionLineQuerySet(models.QuerySet):
-    def is_finished(self, subscription) -> models.QuerySet:
+    def started(self) -> models.QuerySet:
         now = timezone.now()
         return self.filter(
-            subscription=subscription,
-            start__lte=now,
-            end__gt=now
+            (models.Q(start__lte=now) & models.Q(end__gt=now)) |
+            (models.Q(start__lte=now) & models.Q(end__isnull=True))
         )
 
 
