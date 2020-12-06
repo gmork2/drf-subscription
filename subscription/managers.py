@@ -53,6 +53,11 @@ class SubscriptionLineQuerySet(models.QuerySet):
             (models.Q(start__lte=now) & models.Q(end__isnull=True))
         )
 
+    def finished(self) -> models.QuerySet:
+        return self.filter(
+            models.Q(end__lte=timezone.now())
+        )
+
 
 class SubscriptionLineManager(models.Manager):
     def get_queryset(self) -> SubscriptionLineQuerySet:
