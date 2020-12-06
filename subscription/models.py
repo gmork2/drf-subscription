@@ -232,6 +232,12 @@ class Resource(BaseGenericObjectResource):
     active = models.BooleanField(default=True)
     objects = ResourceManager()
 
+    def activate(self):
+        pass
+
+    def deactivate(self):
+        pass
+
     def get_values_from_related_object(self, model_class: models.Model) -> dict:
         """
         Returns a dict with the values of the fields of the related

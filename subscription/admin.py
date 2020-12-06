@@ -10,7 +10,7 @@ from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
 from .signals import default_receiver, callback_receiver
 
 
-def activate_subscription(
+def activate(
         modeladmin: admin.ModelAdmin,
         request: WSGIRequest,
         queryset: QuerySet
@@ -20,10 +20,10 @@ def activate_subscription(
     modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
 
 
-activate_subscription.short_description = _("Activate a subscription")
+activate.short_description = _("Activate a subscription or resource")
 
 
-def deactivate_subscription(
+def deactivate(
         modeladmin: admin.ModelAdmin,
         request: WSGIRequest,
         queryset: QuerySet
@@ -33,7 +33,7 @@ def deactivate_subscription(
     modeladmin.message_user(request, _('Total deactivated: %s' % queryset.count()))
 
 
-deactivate_subscription.short_description = _("Deactivate a subscription")
+deactivate.short_description = _("Deactivate a subscription or resource")
 
 
 def run_callback(
@@ -101,7 +101,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk',),  # 'content_object',
         }),
     )
-    actions = (activate_subscription,)
+    actions = (activate, deactivate)
 
     @staticmethod
     def content_object(obj):
@@ -151,4 +151,4 @@ class ResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk', 'content_object_fields'),  # 'content_object',
         }),
     )
-    actions = (run_callback, connect_resource, disconnect_resource,)
+    actions = (activate, deactivate, run_callback, connect_resource, disconnect_resource,)
