@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models.signals import post_save
 from django.contrib.messages import constants
+from django.db.models import QuerySet
 
 from .managers import SubscriptionQuerySet, ResourceQuerySet
 from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
@@ -10,9 +11,9 @@ from .signals import default_receiver, callback_receiver
 
 
 def activate_subscription(
-        modeladmin: 'SubscriptionAdmin',
+        modeladmin: admin.ModelAdmin,
         request: WSGIRequest,
-        queryset: SubscriptionQuerySet
+        queryset: QuerySet
 ):
     for instance in queryset:
         instance.activate()
@@ -23,9 +24,9 @@ activate_subscription.short_description = _("Activate a subscription")
 
 
 def deactivate_subscription(
-        modeladmin: 'SubscriptionAdmin',
+        modeladmin: admin.ModelAdmin,
         request: WSGIRequest,
-        queryset: SubscriptionQuerySet
+        queryset: QuerySet
 ):
     for instance in queryset:
         instance.deactivate()
