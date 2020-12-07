@@ -50,8 +50,8 @@ class AbstractEventMixin(models.Model):
                 f'argument "{date}" must be an instance of datetime'
             )
         return \
-            self.start >= date if not self.end \
-            else self.start >= date > self.end
+            self.start <= date if not self.end \
+            else self.start <= date < self.end
 
     class Meta:
         abstract = True
@@ -162,17 +162,26 @@ class SubscriptionEvent(AbstractEventMixin):
     @property
     def events(self) -> Generator['SubscriptionEvent', None, None]:
         """
-        Yields future subscription events whose start date is later
-        than the current one.
+        Yields active subscription events.
 
         :return:
         """
-        while self.start > timezone.now():
+        while (
+            timezone.now() <= self.start or
+            (self.end and self.start <= timezone.now() < self.end)
+        ) and (
+            self.start < self.subscription_line.end
+        ):
             params = {
                 'start': self.start,
-                'end': self.end,
-                'subscription_line': self.subscription_line
+                'subscription_line': self.subscription_line,
+                'end': self.end
             }
+            if self.end:
+                params['end'] = self.end \
+                    if self.end < self.subscription_line.end \
+                    else self.subscription_line.end
+
             yield SubscriptionEvent(**params)
             if not (self.end and self.recurrence):
                 break
