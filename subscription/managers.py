@@ -81,6 +81,11 @@ class SubscriptionEventManager(models.Manager):
 
 class ResourceQuerySet(models.QuerySet):
     def active(self) -> models.QuerySet:
+        """
+        Returns all active resources.
+
+        :return:
+        """
         return self.filter(
             active=True,
             subscription_event__subscription_line__subscription__active=True
