@@ -53,7 +53,7 @@ def run_callback(
 run_callback.short_description = _("Run callback")
 
 
-def connect_resource(
+def connect(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
         queryset: ResourceQuerySet
@@ -65,10 +65,10 @@ def connect_resource(
     modeladmin.message_user(request, _('Done!'))
 
 
-connect_resource.short_description = _("Connect signals")
+connect.short_description = _("Connect signals")
 
 
-def disconnect_resource(
+def disconnect(
         modeladmin: 'SubscriptionAdmin',
         request: WSGIRequest,
         queryset: ResourceQuerySet
@@ -83,7 +83,7 @@ def disconnect_resource(
             )
 
 
-disconnect_resource.short_description = _("Disconnect signals")
+disconnect.short_description = _("Disconnect signals")
 
 
 @admin.register(Subscription)
@@ -151,4 +151,4 @@ class ResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_pk', 'content_object_fields'),  # 'content_object',
         }),
     )
-    actions = (activate, deactivate, run_callback, connect_resource, disconnect_resource,)
+    actions = (activate, deactivate, run_callback, connect, disconnect,)
