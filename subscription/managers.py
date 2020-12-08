@@ -152,3 +152,12 @@ class ResourceManager(models.Manager):
             model_class: signal.disconnect(receiver, sender=model_class)
             for model_class in self.related_models()
         }
+
+    def count_active_resources(self, content_type: ContentType) -> int:
+        """
+        Number of active resources for content_type.
+
+        :return:
+        """
+        qs = self.filter(content_type=content_type)
+        return qs.active().count()
