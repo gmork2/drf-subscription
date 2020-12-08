@@ -242,10 +242,17 @@ class Resource(BaseGenericObjectResource):
     objects = ResourceManager()
 
     def activate(self):
-        pass
+        model_class = self.content_type.model_class()
+        post_save.connect(default_receiver, sender=model_class)
+        self.active = True
+        self.save()
 
     def deactivate(self):
-        pass
+        if self.objects.count_active_resources(self.content_type) < 2:
+            model_class = self.content_type.model_class()
+            post_save.disconnect(default_receiver, sender=model_class)
+        self.active = False
+        self.save()
 
     def get_values_from_related_object(self, model_class: models.Model) -> dict:
         """
