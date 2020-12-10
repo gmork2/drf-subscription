@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Optional
 import ast
 
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -186,6 +186,16 @@ class SubscriptionEvent(AbstractEventMixin):
             if not (self.end and self.recurrence):
                 break
             self.__iadd__(self.recurrence)
+
+    @property
+    def current_event(self) -> Optional['SubscriptionEvent']:
+        now = timezone.now()
+
+        for event in self.events:
+            if now in event:
+                return event
+            elif self.end and now > self.subscription_line.end:
+                break
 
     def __iadd__(self, duration: timezone.timedelta):
         """
