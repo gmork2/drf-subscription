@@ -153,11 +153,11 @@ class ResourceManager(models.Manager):
             for model_class in self.related_models()
         }
 
-    def count_active_resources(self, content_type: ContentType) -> int:
+    def exists_resources(self, content_type: ContentType) -> int:
         """
-        Number of active resources for content_type.
+        Checks if exists active resources for content_type.
 
         :return:
         """
         qs = self.filter(content_type=content_type)
-        return qs.active().count()
+        return qs.active().exists()
