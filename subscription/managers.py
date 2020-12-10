@@ -153,7 +153,7 @@ class ResourceManager(models.Manager):
             for model_class in self.related_models()
         }
 
-    def exists_resources(self, content_type: ContentType) -> int:
+    def exists_resources(self, content_type: ContentType) -> bool:
         """
         Checks if exists active resources for content_type.
 
