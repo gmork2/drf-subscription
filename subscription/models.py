@@ -282,9 +282,16 @@ class Resource(BaseGenericObjectResource):
         ).data
 
     def is_ready(self):
-        return self.subscription_event.current_event and \
-               self.subscription_event.subscription_line.subscription.active and \
-               self.active
+        """
+        Returns True if this resource meets the conditions to execute
+        the callback.
+
+        :return:
+        """
+        return \
+            self.subscription_event.current_event and \
+            self.subscription_event.subscription_line.subscription.active and \
+            self.active
 
     def clean(self):
         """
