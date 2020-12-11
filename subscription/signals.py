@@ -41,5 +41,6 @@ def default_receiver(
 
     queryset = Resource.objects.all().related_objects(instance)
     for resource in queryset:
-        callback_receiver(sender, resource, queryset=queryset, **kwargs)
-        resource.save()
+        if resource.is_ready:
+            callback_receiver(sender, resource, queryset=queryset, **kwargs)
+            resource.save()

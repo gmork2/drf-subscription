@@ -51,7 +51,7 @@ class AbstractEventMixin(models.Model):
             )
         return \
             self.start <= date if not self.end \
-            else self.start <= date < self.end
+                else self.start <= date < self.end
 
     class Meta:
         abstract = True
@@ -167,10 +167,10 @@ class SubscriptionEvent(AbstractEventMixin):
         :return:
         """
         while (
-            timezone.now() <= self.start or
-            (self.end and self.start <= timezone.now() < self.end)
+                timezone.now() <= self.start or
+                (self.end and self.start <= timezone.now() < self.end)
         ) and (
-            self.start < self.subscription_line.end
+                self.start < self.subscription_line.end
         ):
             params = {
                 'start': self.start,
@@ -280,6 +280,11 @@ class Resource(BaseGenericObjectResource):
             if self.content_object_fields else serializers.ALL_FIELDS,
             self.content_object
         ).data
+
+    def is_ready(self):
+        return self.subscription_event.current_event and \
+               self.subscription_event.subscription_line.subscription.active and \
+               self.active
 
     def clean(self):
         """
