@@ -281,7 +281,8 @@ class Resource(BaseGenericObjectResource):
             self.content_object
         ).data
 
-    def is_ready(self):
+    @property
+    def is_ready(self) -> bool:
         """
         Returns True if this resource meets the conditions to execute
         the callback.
