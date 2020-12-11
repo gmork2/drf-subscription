@@ -237,8 +237,8 @@ class Resource(BaseGenericObjectResource):
     content_object_fields = models.TextField(
         blank=True,
         help_text=_(
-            'key-value pair with the values of the current instance of the'
-            'related model'
+            'key-value pair with the values of the current instance of '
+            'the related model'
         ),
     )
     callback = models.CharField(
@@ -252,6 +252,12 @@ class Resource(BaseGenericObjectResource):
     objects = ResourceManager()
 
     def activate(self):
+        """
+        Set active to true and connect default receiver with post-save
+        signal.
+
+        :return:
+        """
         model_class = self.content_type.model_class()
         post_save.connect(default_receiver, sender=model_class)
         self.active = True
