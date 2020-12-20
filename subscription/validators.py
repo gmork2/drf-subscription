@@ -18,7 +18,7 @@ class ImportCallBackValidator(object):
                     raise ValidationError(
                         _(f'{obj} object is not callable')
                     )
-        except (ModuleNotFoundError, ImportError, TypeError, AttributeError) as e:
+        except (ModuleNotFoundError, ImportError, TypeError, AttributeError, ValueError) as e:
             raise ValidationError(
                 self.message.format(value)
             )
