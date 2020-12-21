@@ -1,3 +1,5 @@
+from typing import Callable
+
 import ast
 
 from django.db import models
@@ -17,6 +19,7 @@ from ..validators import ImportCallBackValidator
 
 class Resource(BaseGenericObjectResource):
     INCLUDE_HIDDEN = True
+    receiver: Callable = default_receiver
 
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
@@ -51,7 +54,7 @@ class Resource(BaseGenericObjectResource):
         :return:
         """
         model_class = self.content_type.model_class()
-        post_save.connect(default_receiver, sender=model_class)
+        post_save.connect(self.receiver, sender=model_class)
         self.active = True
         self.save()
 
@@ -60,7 +63,7 @@ class Resource(BaseGenericObjectResource):
         self.save()
         if not self.objects.exists_resources(self.content_type):
             model_class = self.content_type.model_class()
-            post_save.disconnect(default_receiver, sender=model_class)
+            post_save.disconnect(self.receiver, sender=model_class)
 
     def get_values_from_related_object(self, model_class: models.Model) -> dict:
         """
@@ -139,7 +142,7 @@ class Resource(BaseGenericObjectResource):
         model_class = self.content_type.model_class()
         self.content_object_fields = self.get_values_from_related_object(model_class)
         if self._state.adding:
-            post_save.connect(default_receiver, sender=model_class)
+            post_save.connect(self.receiver, sender=model_class)
         return super().save(*args, **kwargs)
 
     def __str__(self):
