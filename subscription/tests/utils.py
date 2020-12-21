@@ -17,6 +17,14 @@ def dummy(*args, **kwargs) -> None:
 
 
 def split_path(path: str, items: List[str]) -> Optional[List[str]]:
+    """
+    Function that breaks out all of the parts of a file or directory
+    path and returns them as a list.
+
+    :param path:
+    :param items:
+    :return:
+    """
     if path:
         head, tail = os.path.split(path)
         if tail:
