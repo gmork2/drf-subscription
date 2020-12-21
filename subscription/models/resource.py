@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, ClassVar
 
 import ast
 
@@ -18,7 +18,7 @@ from ..validators import ImportCallBackValidator
 
 
 class Resource(BaseGenericObjectResource):
-    INCLUDE_HIDDEN = True
+    INCLUDE_HIDDEN: ClassVar[bool] = True
     receiver: Callable = default_receiver
 
     subscription_event = models.ForeignKey(
