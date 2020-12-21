@@ -1,13 +1,12 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models.signals import post_save
 from django.contrib.messages import constants
 from django.db.models import QuerySet
 
 from .managers import SubscriptionQuerySet, ResourceQuerySet
 from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
-from .signals import default_receiver, callback_receiver
+from .signals import callback_receiver
 
 
 def activate(
@@ -58,9 +57,13 @@ def connect(
         request: WSGIRequest,
         queryset: ResourceQuerySet
 ) -> None:
+
     for instance in queryset:
+
+        receiver = instance.__class__.receiver
+        signal = instance.__class__.signal
         model_class = instance.content_type.model_class()
-        post_save.connect(default_receiver, sender=model_class)
+        signal.connect(receiver, sender=model_class)
 
     modeladmin.message_user(request, _('Done!'))
 
@@ -73,9 +76,14 @@ def disconnect(
         request: WSGIRequest,
         queryset: ResourceQuerySet
 ) -> None:
+
     for instance in queryset:
+
+        receiver = instance.__class__.receiver
+        signal = instance.__class__.signal
         model_class = instance.content_type.model_class()
-        if not post_save.disconnect(default_receiver, sender=model_class):
+
+        if not signal.disconnect(receiver, sender=model_class):
             modeladmin.message_user(
                 request,
                 _('Unable to disconnect: %s' % model_class),

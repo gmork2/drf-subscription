@@ -19,7 +19,9 @@ from ..validators import ImportCallBackValidator
 
 class Resource(BaseGenericObjectResource):
     INCLUDE_HIDDEN: ClassVar[bool] = True
+
     receiver: Callable = default_receiver
+    signal: Callable = post_save
 
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
@@ -54,7 +56,7 @@ class Resource(BaseGenericObjectResource):
         :return:
         """
         model_class = self.content_type.model_class()
-        post_save.connect(self.receiver, sender=model_class)
+        self.signal.connect(self.receiver, sender=model_class)
         self.active = True
         self.save()
 
@@ -63,7 +65,7 @@ class Resource(BaseGenericObjectResource):
         self.save()
         if not self.objects.exists_resources(self.content_type):
             model_class = self.content_type.model_class()
-            post_save.disconnect(self.receiver, sender=model_class)
+            self.signal.disconnect(self.receiver, sender=model_class)
 
     def get_values_from_related_object(self, model_class: models.Model) -> dict:
         """
@@ -132,8 +134,8 @@ class Resource(BaseGenericObjectResource):
         """
         Fills content_object_fields with a dictionary that contains the
         field-value pair of the related model, in addition to connecting
-        the default receiver with that class through the post_save
-        signal, prior to saving the instance.
+        the default receiver with that class through the signal, prior
+        to saving the instance.
 
         :param args:
         :param kwargs:
@@ -142,7 +144,7 @@ class Resource(BaseGenericObjectResource):
         model_class = self.content_type.model_class()
         self.content_object_fields = self.get_values_from_related_object(model_class)
         if self._state.adding:
-            post_save.connect(self.receiver, sender=model_class)
+            self.signal.connect(self.receiver, sender=model_class)
         return super().save(*args, **kwargs)
 
     def __str__(self):

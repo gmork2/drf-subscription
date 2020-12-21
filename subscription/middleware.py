@@ -1,4 +1,3 @@
-from django.db.models.signals import post_save
 from django.apps import apps
 
 from .signals import default_receiver
@@ -16,7 +15,7 @@ class SubscriberMiddleware:
         resource_class = apps.get_model('subscription', 'Resource')
 
         resource_class.objects.connect_all(
-            post_save,
+            resource_class.signal,
             default_receiver
         )
 
