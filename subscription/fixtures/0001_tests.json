@@ -1,0 +1,101 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "admin",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$216000$xtfjKAE98JvB$0AvZdlrkspht30SZQTeKjNc2vJuuj005g5uckjDFAu4=",
+      "last_login": "2020-01-01T12:00:00Z",
+      "is_superuser": true,
+      "username": "user",
+      "first_name": "",
+      "last_name": "",
+      "email": "user@localhost",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-01-01T12:00:00Z",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": {
+      "app_label": "auth",
+      "model": "group"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 4,
+    "fields": {
+      "app_label": "auth",
+      "model": "user"
+    }
+  },
+  {
+    "model": "subscription.subscription",
+    "pk": 1,
+    "fields": {
+      "content_type": 3,
+      "object_pk": "1",
+      "name": "admin",
+      "active": true
+    }
+  },
+  {
+    "model": "subscription.subscriptionline",
+    "pk": 1,
+    "fields": {
+      "start": "2020-01-01T12:00:00Z",
+      "end": null,
+      "description": "",
+      "subscription": 1
+    }
+  },
+  {
+    "model": "subscription.subscriptionevent",
+    "pk": 1,
+    "fields": {
+      "start": "2020-01-01T12:00:00Z",
+      "end": null,
+      "description": "",
+      "recurrence": "1 00:00:00",
+      "subscription_line": 1
+    }
+  },
+  {
+    "model": "subscription.resource",
+    "pk": 1,
+    "fields": {
+      "content_type": 4,
+      "object_pk": "1",
+      "subscription_event": 1,
+      "content_object_fields": "{'id': 1, 'password': 'pbkdf2_sha256$216000$xtfjKAE98JvB$0AvZdlrkspht30SZQTeKjNc2vJuuj005g5uckjDFAu4=', 'last_login': '2020-12-20T11:44:28.826780Z', 'is_superuser': True, 'username': 'test', 'first_name': '', 'last_name': '', 'email': 'test@localhost', 'is_staff': True, 'is_active': True, 'date_joined': '2020-11-23T00:23:36Z', 'groups': [], 'user_permissions': []}",
+      "callback": "subscription.tests.utils.dummy",
+      "active": true
+    }
+  },
+  {
+    "model": "subscription.resource",
+    "pk": 2,
+    "fields": {
+      "content_type": 3,
+      "object_pk": "1",
+      "subscription_event": 1,
+      "content_object_fields": "",
+      "callback": null,
+      "active": true
+    }
+  }
+]
