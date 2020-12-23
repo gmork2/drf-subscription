@@ -16,7 +16,7 @@ class SubscriberMiddleware:
 
         resource_class.objects.connect_all(
             resource_class.signal,
-            default_receiver
+            resource_class.receiver
         )
 
     def __call__(self, request):
