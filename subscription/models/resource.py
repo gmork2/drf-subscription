@@ -103,7 +103,18 @@ class Resource(BaseGenericObjectResource):
         :param model_class:
         :return:
         """
-        self.signal(self.receiver, sender=model_class)
+        self.signal.connect(self.receiver, sender=model_class)
+
+    def disconnect(self, model_class: models.Model) -> bool:
+        """
+
+        :param model_class:
+        :return:
+        """
+        return self.signal.disconnect(
+            self.receiver,
+            sender=model_class
+        )
 
     def clean(self):
         """
