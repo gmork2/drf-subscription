@@ -97,25 +97,6 @@ class Resource(BaseGenericObjectResource):
             self.subscription_event.subscription_line.subscription.active and \
             self.active
 
-    def connect(self, model_class: models.Model) -> None:
-        """
-
-        :param model_class:
-        :return:
-        """
-        self.signal.connect(self.receiver, sender=model_class)
-
-    def disconnect(self, model_class: models.Model) -> bool:
-        """
-
-        :param model_class:
-        :return:
-        """
-        return self.signal.disconnect(
-            self.receiver,
-            sender=model_class
-        )
-
     def clean(self):
         """
 
