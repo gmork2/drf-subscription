@@ -1,3 +1,6 @@
+from typing import Callable
+
+from django.db.models.signals import ModelSignal
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -10,13 +13,43 @@ class SubscriberMiddlewareTestCase(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.recv = Resource.receiver
+        self.signal: ModelSignal = Resource.signal
+        self.recv: Callable = Resource.receiver
         self.user = User.objects.create(username='test')
-        self.middleware = SubscriberMiddleware(lambda x: x)
-        self.signal = Resource.signal
+
+    def test_empty_resources(self):
+        resources = Resource.objects.all()
+        resources.delete()
+
+        _ = SubscriberMiddleware(lambda x: x)
+        response = self.signal.disconnect(self.recv, sender=self.user.__class__)
+        self.assertFalse(response)
 
     def test_related_class_connected(self):
-        for model_class in Resource.objects.related_models():
-            self.assertTrue(self.signal.disconnect(self.recv, sender=model_class))
-        self.assertFalse(self.signal.disconnect(self.recv, sender=model_class))
+        _ = SubscriberMiddleware(lambda x: x)
 
+        resource = Resource.objects.first()
+        model_class = resource.content_type.model_class()
+        response = self.signal.disconnect(self.recv, sender=model_class)
+
+        self.assertTrue(response)
+
+    def test_not_related_class(self):
+        resource = Resource.objects.first()
+        model_class = resource.content_type.model_class()
+        resources = Resource.objects.filter(content_type=resource.content_type)
+        resources.delete()
+
+        _ = SubscriberMiddleware(lambda x: x)
+        response = self.signal.disconnect(self.recv, sender=model_class)
+        self.assertFalse(response)
+
+    def test_all_related_class_connected(self):
+        _ = SubscriberMiddleware(lambda x: x)
+
+        for model_class in Resource.objects.related_models():
+            response = self.signal.disconnect(self.recv, sender=model_class)
+            self.assertTrue(response)
+        else:
+            response = self.signal.disconnect(self.recv, sender=model_class)
+            self.assertFalse(response)
