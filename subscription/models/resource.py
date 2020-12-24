@@ -3,7 +3,7 @@ from typing import Callable, ClassVar
 import ast
 
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, ModelSignal
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.conf import settings
@@ -21,7 +21,7 @@ class Resource(BaseGenericObjectResource):
     INCLUDE_HIDDEN: ClassVar[bool] = True
 
     receiver: Callable = default_receiver
-    signal: Callable = post_save
+    signal: ModelSignal = post_save
 
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
