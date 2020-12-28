@@ -1,9 +1,10 @@
-from typing import List, Callable, Dict, Type
+from typing import List, Callable, Dict, Type, Optional
 import logging
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
+from django.db.models.signals import ModelSignal
 from django.utils import timezone
 
 from .signals import default_receiver
@@ -128,29 +129,37 @@ class ResourceManager(models.Manager):
             )
         ]
 
-    def connect_all(self, signal, receiver: Callable = default_receiver) -> None:
+    def connect(
+            self,
+            signal: ModelSignal,
+            receiver: Callable = default_receiver,
+            model_class: Optional[Type[models.Model]] = None
+    ) -> None:
         """
         Connects signal with all related models to any existing active
         resource.
         """
-        for model_class in self.related_models():
+        model_classes = [model_class] if model_class else self.related_models()
+        for model_class in model_classes:
             signal.connect(receiver, sender=model_class)
             logger.info(
                 f'Signal {signal}: {model_class} -> {default_receiver}'
             )
 
-    def disconnect_all(
+    def disconnect(
             self,
-            signal,
-            receiver: Callable = default_receiver
+            signal: ModelSignal,
+            receiver: Callable = default_receiver,
+            model_class: Optional[Type[models.Model]] = None
     ) -> Dict[Type[models.Model], bool]:
         """
         Disconnects signal with all related models to any existing active
         resource.
         """
+        model_classes = [model_class] if model_class else self.related_models()
         return {
             model_class: signal.disconnect(receiver, sender=model_class)
-            for model_class in self.related_models()
+            for model_class in model_classes
         }
 
     def exists_resources(self, content_type: ContentType) -> bool:
