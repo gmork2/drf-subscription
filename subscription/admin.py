@@ -14,8 +14,9 @@ def activate(
         request: WSGIRequest,
         queryset: QuerySet
 ):
-    for instance in queryset:
-        instance.activate()
+    queryset.update(active=True)
+    model = queryset.model
+    model.objects.connect(model.signal, model.receiver, model)
     modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
 
 
@@ -27,8 +28,9 @@ def deactivate(
         request: WSGIRequest,
         queryset: QuerySet
 ):
-    for instance in queryset:
-        instance.deactivate()
+    queryset.update(active=False)
+    model = queryset.model
+    model.objects.disconnect(model.signal, model.receiver, model)
     modeladmin.message_user(request, _('Total deactivated: %s' % queryset.count()))
 
 
@@ -89,6 +91,8 @@ def disconnect(
                 _('Unable to disconnect: %s' % model_class),
                 level=constants.ERROR
             )
+        else:
+            modeladmin.message_user(request, _('Done!'))
 
 
 disconnect.short_description = _("Disconnect signals")
