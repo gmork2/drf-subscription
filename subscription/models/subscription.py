@@ -74,8 +74,7 @@ class SubscriptionEvent(AbstractEventMixin):
 
     def clean(self):
         """
-        Checks for closed interval in recurrence and overlapping
-        of intervals.
+        Checks that the intervals do not overlap.
 
         :return:
         """
