@@ -85,6 +85,12 @@ class SubscriptionEvent(AbstractEventMixin):
                 _('The start date of the new interval cannot be contained '
                   'in the current interval')
             )
+        if self.subscription_line.start > self.start:
+            raise ValidationError(
+                _('The start date must be after or equal to the start date '
+                  'of the subscription line')
+            )
+
         super().clean()
 
     @property
