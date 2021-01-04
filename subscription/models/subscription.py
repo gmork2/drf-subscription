@@ -90,7 +90,6 @@ class SubscriptionEvent(AbstractEventMixin):
                 _('The start date must be after or equal to the start date '
                   'of the subscription line')
             )
-
         super().clean()
 
     @property
@@ -103,9 +102,11 @@ class SubscriptionEvent(AbstractEventMixin):
         while (
                 timezone.now() <= self.start or
                 (self.end and self.start <= timezone.now() < self.end)
-        ) and (
-                self.start < self.subscription_line.end
         ):
+            if self.subscription_line.end and \
+                    self.start >= self.subscription_line.end:
+                break
+
             params = {
                 'start': self.start,
                 'subscription_line': self.subscription_line,
