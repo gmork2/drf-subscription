@@ -90,6 +90,13 @@ class SubscriptionEvent(AbstractEventMixin):
                 _('The start date must be after or equal to the start date '
                   'of the subscription line')
             )
+        if self.end and \
+                self.subscription_line.end and \
+                self.end > self.subscription_line.end:
+            raise ValidationError(
+                _('The end date must be earlier or equal than the end date '
+                  'of the subscription line')
+            )
         super().clean()
 
     @property
