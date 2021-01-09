@@ -82,6 +82,26 @@ class SubscriptionEventTestCase(TestCase):
         self.event.subscription_line.start = now + timezone.timedelta(minutes=1)
         self.assertRaises(ValidationError, self.event.clean)
 
+    def test_event_end_is_later_than_line_end(self):
+        now = timezone.now()
+        self.event.end = now + timezone.timedelta(days=1)
+        self.event.subscription_line.end = now + timezone.timedelta(minutes=1)
+        self.assertRaises(ValidationError, self.event.clean)
+
+    def test_event_end_is_equal_than_line_end(self):
+        now = timezone.now()
+        self.event.recurrence = None
+        self.event.end = now + timezone.timedelta(days=1)
+        self.event.subscription_line.end = now + timezone.timedelta(days=1)
+        self.assertIsNone(self.event.clean())
+
+    def test_event_end_is_earlier_than_line_end(self):
+        now = timezone.now()
+        self.event.recurrence = None
+        self.event.end = now + timezone.timedelta(minutes=1)
+        self.event.subscription_line.end = now + timezone.timedelta(days=1)
+        self.assertIsNone(self.event.clean())
+
     def test_future_one_time_event(self):
         now = timezone.now()
         self.event.recurrence = None
