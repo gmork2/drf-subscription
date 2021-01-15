@@ -96,3 +96,25 @@ class SubscriptionEventTestCase(TestCase):
         self.event.end = None
         events = list(self.event.events)
         self.assertEqual(1, len(events))
+
+        self.event.end = self.now + timezone.timedelta(days=2)
+        events = list(self.event.events)
+        self.assertEqual(1, len(events))
+
+    def test_current_one_time_event(self):
+        self.event.recurrence = None
+        self.event.start = self.now - timezone.timedelta(days=1)
+        self.event.end = None
+        events = list(self.event.events)
+        self.assertEqual(1, len(events))
+
+        self.event.end = self.now + timezone.timedelta(days=1)
+        events = list(self.event.events)
+        self.assertEqual(1, len(events))
+
+    def test_ended_one_time_event(self):
+        self.event.recurrence = None
+        self.event.start = self.now - timezone.timedelta(days=2)
+        self.event.end = self.now - timezone.timedelta(days=1)
+        events = list(self.event.events)
+        self.assertEqual(0, len(events))
