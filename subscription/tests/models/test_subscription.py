@@ -13,6 +13,11 @@ class SubscriptionEventTestCase(TestCase):
         self.event = SubscriptionEvent.objects.first()
         self.now = timezone.now()
 
+    def test_recurring_event_with_no_end_date(self):
+        self.event.end = None
+        self.event.recurrence = timezone.timedelta(days=1)
+        self.assertRaises(ValidationError, self.event.clean)
+
     def test_event_intervals_not_overlapping(self):
         self.event.recurrence = timezone.timedelta(days=1)
         self.event.start = self.now
