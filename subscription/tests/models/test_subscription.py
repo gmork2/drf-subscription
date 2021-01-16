@@ -44,7 +44,7 @@ class SubscriptionEventTestCase(TestCase):
         self.event.recurrence = timezone.timedelta(days=1)
         self.event.start = self.now
         self.event.end = None
-        self.assertIsNone(self.event.clean())
+        self.assertRaises(ValidationError, self.event.clean)
 
     def test_event_interval_with_no_recurrence_or_end_date(self):
         self.event.recurrence = None
