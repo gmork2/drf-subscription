@@ -78,6 +78,10 @@ class SubscriptionEvent(AbstractEventMixin):
 
         :return:
         """
+        if not self.end and self.recurrence:
+            raise ValidationError(
+                _('The end date is mandatory if self.recurrence is not null')
+            )
         if self.recurrence and \
                 self.end and \
                 self.start + self.recurrence < self.end:
