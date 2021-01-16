@@ -70,7 +70,7 @@
       "start": "2020-01-01T12:00:00Z",
       "end": null,
       "description": "",
-      "recurrence": "1 00:00:00",
+      "recurrence": null,
       "subscription_line": 1
     }
   },
