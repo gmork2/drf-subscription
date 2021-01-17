@@ -101,6 +101,12 @@ class SubscriptionEvent(AbstractEventMixin):
                 _('The end date must be earlier or equal than the end date '
                   'of the subscription line')
             )
+        if self.subscription_line.end and \
+                self.start >= self.subscription_line.end:
+            raise ValidationError(
+                _('The start date must be earlier or equal than the end date '
+                  'of the subscription line')
+            )
         super().clean()
 
     @property
@@ -111,9 +117,11 @@ class SubscriptionEvent(AbstractEventMixin):
         :return:
         """
         while (
-                not self.end or
-                (self.end and timezone.now() < self.end) or
-                (self.end and self.start <= timezone.now() < self.end)
+            not self.end or
+            self.end and (
+                timezone.now() < self.end or
+                self.start <= timezone.now() < self.end
+            )
         ):
             if self.subscription_line.end and \
                     self.start >= self.subscription_line.end:
@@ -129,9 +137,17 @@ class SubscriptionEvent(AbstractEventMixin):
                     if self.subscription_line.end is None or self.end < self.subscription_line.end \
                     else self.subscription_line.end
 
-            yield SubscriptionEvent(**params)
-            if not (self.end and self.recurrence):
+            event = SubscriptionEvent(**params)
+
+            try:
+                event.clean()
+            except ValidationError:
                 break
+            else:
+                yield event
+                if not (self.end and self.recurrence):
+                    break
+
             self.__iadd__(self.recurrence)
 
     @property
