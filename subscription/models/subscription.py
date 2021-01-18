@@ -19,15 +19,6 @@ class Subscription(BaseGenericObjectResource):
     active = models.BooleanField(default=True)
     objects = SubscriptionManager()
 
-    def active_lines(self):
-        pass
-
-    def activate(self):
-        pass
-
-    def deactivate(self):
-        pass
-
     def __str__(self):
         related_object = super().__str__()
         return '%s (%s): %s -> %s' % (
