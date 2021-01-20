@@ -108,11 +108,11 @@ class SubscriptionEvent(AbstractEventMixin):
         :return:
         """
         while (
-            not self.end or
-            self.end and (
-                timezone.now() < self.end or
-                self.start <= timezone.now() < self.end
-            )
+                not self.end or
+                self.end and (
+                        timezone.now() < self.end or
+                        self.start <= timezone.now() < self.end
+                )
         ):
             if self.subscription_line.end and \
                     self.start >= self.subscription_line.end:
@@ -122,11 +122,13 @@ class SubscriptionEvent(AbstractEventMixin):
                 'start': self.start,
                 'subscription_line': self.subscription_line,
                 'end': self.end
+
+                if self.end and (
+                        not self.subscription_line.end or
+                        self.end < self.subscription_line.end
+                )
+                else self.subscription_line.end
             }
-            if self.end:
-                params['end'] = self.end \
-                    if self.subscription_line.end is None or self.end < self.subscription_line.end \
-                    else self.subscription_line.end
 
             event = SubscriptionEvent(**params)
 
