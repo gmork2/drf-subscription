@@ -118,10 +118,15 @@ class SubscriptionEvent(AbstractEventMixin):
                     self.start >= self.subscription_line.end:
                 break
 
+            end = self.end \
+                if self.end and self.subscription_line.end and \
+                self.end < self.subscription_line.end \
+                else self.subscription_line.end
+
             params = {
                 'start': self.start,
                 'subscription_line': self.subscription_line,
-                'end': self.end or self.subscription_line.end
+                'end': end
             }
 
             event = SubscriptionEvent(**params)
