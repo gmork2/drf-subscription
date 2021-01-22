@@ -42,9 +42,6 @@ class SubscriptionManager(models.Manager):
             using=self._db
         )
 
-    def with_active_lines(self):
-        pass
-
 
 class SubscriptionLineQuerySet(models.QuerySet):
     def started(self) -> models.QuerySet:
