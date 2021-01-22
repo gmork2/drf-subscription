@@ -108,11 +108,11 @@ class SubscriptionEvent(AbstractEventMixin):
         :return:
         """
         while (
-                not self.end or
-                self.end and (
-                        timezone.now() < self.end or
-                        self.start <= timezone.now() < self.end
-                )
+            not self.end or
+            self.end and (
+                timezone.now() < self.end or
+                self.start <= timezone.now() < self.end
+            )
         ):
             if self.subscription_line.end and \
                     self.start >= self.subscription_line.end:
@@ -168,6 +168,11 @@ class SubscriptionEvent(AbstractEventMixin):
             self.start,
             self.end
         )
+
+    def __len__(self):
+        if self.end:
+            return self.end - self.start
+        return float('inf')
 
     class Meta:
         abstract = 'subscription' not in settings.INSTALLED_APPS
