@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
@@ -123,3 +125,30 @@ class SubscriptionEventTestCase(TestCase):
         self.event.end = self.now - timezone.timedelta(days=1)
         events = list(self.event.events)
         self.assertEqual(0, len(events))
+
+    def test_recurring_event_from_past(self):
+        start = self.now + timezone.timedelta(days=10)
+
+        self.event.subscription_line.start = start
+        self.event.subscription_line.end = start + timezone.timedelta(days=11)
+        self.event.start = start
+        self.event.end = start + timezone.timedelta(days=1)
+        self.event.recurrence = timezone.timedelta(days=1)
+
+        events = list(self.event.events)
+        self.assertEqual(len(events), 11)
+
+    def test_recurring_event_from_past(self):
+        start = self.now + timezone.timedelta(days=4)
+
+        self.event.subscription_line.start = start
+        self.event.subscription_line.end = start + timezone.timedelta(days=3)
+        self.event.start = start
+        self.event.end = start + timezone.timedelta(days=1)
+        self.event.recurrence = timezone.timedelta(hours=25)
+
+        events = list(self.event.events)
+        self.assertEqual(len(events), 3)
+        duration_last_event = events[-1].end - events[-1].start
+        self.assertEqual(divmod(duration_last_event.total_seconds(), 60)[0], 1320)
+
