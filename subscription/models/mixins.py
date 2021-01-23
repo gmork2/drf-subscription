@@ -40,5 +40,8 @@ class AbstractEventMixin(models.Model):
             self.start <= date if not self.end \
                 else self.start <= date < self.end
 
+    def now(self):
+        return timezone.now()
+
     class Meta:
         abstract = True
