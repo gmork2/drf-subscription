@@ -107,13 +107,7 @@ class SubscriptionEvent(AbstractEventMixin):
 
         :return:
         """
-        while (
-            not self.end or
-            self.end and (
-                timezone.now() < self.end or
-                self.start <= timezone.now() < self.end
-            )
-        ):
+        while not self.end or self.now() < self.end:
             if self.subscription_line.end and \
                     self.start >= self.subscription_line.end:
                 break
@@ -144,7 +138,7 @@ class SubscriptionEvent(AbstractEventMixin):
 
     @property
     def current_event(self) -> Optional['SubscriptionEvent']:
-        now = timezone.now()
+        now = self.now()
 
         for event in self.events:
             if now in event:
