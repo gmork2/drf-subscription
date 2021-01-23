@@ -10,7 +10,7 @@ class SubscriptionEventTestCase(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.event = SubscriptionEvent.objects.first()
+        self.event = SubscriptionEvent.objects.get(id=1)
         self.now = timezone.now()
 
     def test_recurring_event_with_no_end_date(self):
@@ -125,28 +125,15 @@ class SubscriptionEventTestCase(TestCase):
         self.assertEqual(0, len(events))
 
     def test_recurring_event_from_past(self):
-        start = self.now + timezone.timedelta(days=10)
+        event = SubscriptionEvent.objects.get(id=2)
+        event.now = lambda: event.start - timezone.timedelta(days=1)
+        events = list(event.events)
+        self.assertEqual(len(events), 10)
 
-        self.event.subscription_line.start = start
-        self.event.subscription_line.end = start + timezone.timedelta(days=11)
-        self.event.start = start
-        self.event.end = start + timezone.timedelta(days=1)
-        self.event.recurrence = timezone.timedelta(days=1)
-
-        events = list(self.event.events)
-        self.assertEqual(len(events), 11)
-
-    def test_recurring_event_from_past(self):
-        start = self.now + timezone.timedelta(days=4)
-
-        self.event.subscription_line.start = start
-        self.event.subscription_line.end = start + timezone.timedelta(days=3)
-        self.event.start = start
-        self.event.end = start + timezone.timedelta(days=1)
-        self.event.recurrence = timezone.timedelta(hours=25)
-
-        events = list(self.event.events)
+        event = SubscriptionEvent.objects.get(id=3)
+        event.now = lambda: event.start - timezone.timedelta(days=1)
+        events = list(event.events)
         self.assertEqual(len(events), 3)
-        duration_last_event = events[-1].end - events[-1].start
-        self.assertEqual(divmod(duration_last_event.total_seconds(), 60)[0], 1320)
 
+        duration = events[-1].end - events[-1].start
+        self.assertEqual(divmod(duration.total_seconds(), 60)[0], 1320)
