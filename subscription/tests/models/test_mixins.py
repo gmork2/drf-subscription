@@ -11,10 +11,10 @@ class AbstractEventMixinTestCase(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.obj = SubscriptionLine.objects.first()
-        if not issubclass(self.obj.__class__, AbstractEventMixin):
+        self.line = SubscriptionLine.objects.get(id=1)
+        if not issubclass(self.line.__class__, AbstractEventMixin):
             self.skipTest(
-                f"The object class [{self.obj.__class__}] must inherit "
+                f"The object class [{self.line.__class__}] must inherit "
                 f"from AbstractEventMixin"
             )
         self.now = timezone.now()
@@ -24,47 +24,47 @@ class AbstractEventMixinTestCase(TestCase):
         self.assertTrue(event._meta.abstract)
 
     def test_event_start_is_prev_end(self):
-        self.obj.start = self.now
-        self.obj.end = self.now + timezone.timedelta(seconds=1)
-        self.assertIsNone(self.obj.clean())
+        self.line.start = self.now
+        self.line.end = self.now + timezone.timedelta(seconds=1)
+        self.assertIsNone(self.line.clean())
 
     def test_event_start_is_same_end(self):
-        self.obj.start = self.now
-        self.obj.end = self.now
-        self.assertIsNone(self.obj.clean())
+        self.line.start = self.now
+        self.line.end = self.now
+        self.assertIsNone(self.line.clean())
 
     def test_event_start_is_later_end(self):
-        self.obj.start = self.now + timezone.timedelta(seconds=1)
-        self.obj.end = self.now
-        self.assertRaises(ValidationError, self.obj.clean)
+        self.line.start = self.now + timezone.timedelta(seconds=1)
+        self.line.end = self.now
+        self.assertRaises(ValidationError, self.line.clean)
 
     def test_event_contains_date(self):
-        self.obj.start = self.now - timezone.timedelta(days=1)
-        self.obj.end = self.now + timezone.timedelta(days=1)
-        self.assertTrue(self.now in self.obj)
+        self.line.start = self.now - timezone.timedelta(days=1)
+        self.line.end = self.now + timezone.timedelta(days=1)
+        self.assertTrue(self.now in self.line)
 
     def test_event_contains_start_date(self):
-        self.obj.start = self.now
-        self.obj.end = self.now + timezone.timedelta(days=1)
-        self.assertTrue(self.now in self.obj)
+        self.line.start = self.now
+        self.line.end = self.now + timezone.timedelta(days=1)
+        self.assertTrue(self.now in self.line)
 
     def test_event_contains_end_date(self):
-        self.obj.start = self.now - timezone.timedelta(days=1)
-        self.obj.end = self.now
-        self.assertFalse(self.now in self.obj)
+        self.line.start = self.now - timezone.timedelta(days=1)
+        self.line.end = self.now
+        self.assertFalse(self.now in self.line)
 
     def test_event_not_contains_prev_date(self):
-        self.obj.start = self.now + timezone.timedelta(days=1)
-        self.obj.end = self.now + timezone.timedelta(days=2)
-        self.assertFalse(self.now in self.obj)
+        self.line.start = self.now + timezone.timedelta(days=1)
+        self.line.end = self.now + timezone.timedelta(days=2)
+        self.assertFalse(self.now in self.line)
 
     def test_event_not_contains_later_date(self):
-        self.obj.start = self.now - timezone.timedelta(days=2)
-        self.obj.end = self.now - timezone.timedelta(days=1)
-        self.assertFalse(self.now in self.obj)
+        self.line.start = self.now - timezone.timedelta(days=2)
+        self.line.end = self.now - timezone.timedelta(days=1)
+        self.assertFalse(self.now in self.line)
 
     def test_event_contains_raise_type_error_exception(self):
-        self.obj.start = self.now - timezone.timedelta(days=1)
-        self.obj.end = self.now + timezone.timedelta(days=1)
-        self.assertRaises(TypeError, self.obj.__contains__, None)
-        self.assertRaises(TypeError, self.obj.__contains__, '2021-01-01 18:25:34.894188+00:00')
+        self.line.start = self.now - timezone.timedelta(days=1)
+        self.line.end = self.now + timezone.timedelta(days=1)
+        self.assertRaises(TypeError, self.line.__contains__, None)
+        self.assertRaises(TypeError, self.line.__contains__, '2021-01-01 18:25:34.894188+00:00')
