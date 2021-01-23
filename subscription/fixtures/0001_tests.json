@@ -59,7 +59,27 @@
     "fields": {
       "start": "2020-01-01T12:00:00Z",
       "end": null,
-      "description": "",
+      "description": "Endless subscription line",
+      "subscription": 1
+    }
+  },
+  {
+    "model": "subscription.subscriptionline",
+    "pk": 2,
+    "fields": {
+      "start": "2020-01-01T12:00:00Z",
+      "end": "2020-01-11T12:00:00Z",
+      "description": "10-days subscription line",
+      "subscription": 1
+    }
+  },
+  {
+    "model": "subscription.subscriptionline",
+    "pk": 3,
+    "fields": {
+      "start": "2020-01-01T12:00:00Z",
+      "end": "2020-01-04T12:00:00Z",
+      "description": "3-days subscription line",
       "subscription": 1
     }
   },
@@ -69,9 +89,31 @@
     "fields": {
       "start": "2020-01-01T12:00:00Z",
       "end": null,
-      "description": "",
+      "description": "One-time subscription event",
       "recurrence": null,
       "subscription_line": 1
+    }
+  },
+  {
+    "model": "subscription.subscriptionevent",
+    "pk": 2,
+    "fields": {
+      "start": "2020-01-01T12:00:00Z",
+      "end": "2020-01-02T12:00:00Z",
+      "description": "Recurrence 1-day",
+      "recurrence": "24:00:00",
+      "subscription_line": 2
+    }
+  },
+  {
+    "model": "subscription.subscriptionevent",
+    "pk": 3,
+    "fields": {
+      "start": "2020-01-01T12:00:00Z",
+      "end": "2020-01-02T12:00:00Z",
+      "description": "Recurrence 1 day + 1 hour",
+      "recurrence": "25:00:00",
+      "subscription_line": 3
     }
   },
   {
