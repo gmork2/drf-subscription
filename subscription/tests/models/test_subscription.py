@@ -126,12 +126,12 @@ class SubscriptionEventTestCase(TestCase):
 
     def test_recurring_event_from_past(self):
         event = SubscriptionEvent.objects.get(id=2)
-        event.now = lambda: event.start - timezone.timedelta(days=1)
+        event.tz_now = lambda: event.start - timezone.timedelta(days=1)
         events = list(event.events)
         self.assertEqual(len(events), 10)
 
         event = SubscriptionEvent.objects.get(id=3)
-        event.now = lambda: event.start - timezone.timedelta(days=1)
+        event.tz_now = lambda: event.start - timezone.timedelta(days=1)
         events = list(event.events)
         self.assertEqual(len(events), 3)
 

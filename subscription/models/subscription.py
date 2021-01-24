@@ -107,7 +107,7 @@ class SubscriptionEvent(AbstractEventMixin):
 
         :return:
         """
-        while not self.end or self.now() < self.end:
+        while not self.end or self.tz_now() < self.end:
             if self.subscription_line.end and \
                     self.start >= self.subscription_line.end:
                 break
@@ -138,7 +138,7 @@ class SubscriptionEvent(AbstractEventMixin):
 
     @property
     def current_event(self) -> Optional['SubscriptionEvent']:
-        now = self.now()
+        now = self.tz_now()
 
         for event in self.events:
             if now in event:
