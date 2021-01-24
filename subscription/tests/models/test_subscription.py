@@ -124,16 +124,30 @@ class SubscriptionEventTestCase(TestCase):
         events = list(self.event.events)
         self.assertEqual(0, len(events))
 
-    def test_recurring_event_from_past(self):
+    def test_recurring_event_since_past(self):
         event = SubscriptionEvent.objects.get(id=2)
         event.tz_now = lambda: event.start - timezone.timedelta(days=1)
         events = list(event.events)
         self.assertEqual(len(events), 10)
 
+    def test_recurring_event_since_past_with_resize(self):
         event = SubscriptionEvent.objects.get(id=3)
         event.tz_now = lambda: event.start - timezone.timedelta(days=1)
         events = list(event.events)
         self.assertEqual(len(events), 3)
+        duration = events[-1].end - events[-1].start
+        self.assertEqual(divmod(duration.total_seconds(), 60)[0], 1320)
 
+    def test_recurring_event_since_start_date(self):
+        event = SubscriptionEvent.objects.get(id=2)
+        event.tz_now = lambda: event.start
+        events = list(event.events)
+        self.assertEqual(len(events), 10)
+
+    def test_recurring_event_since_start_date_with_resize(self):
+        event = SubscriptionEvent.objects.get(id=3)
+        event.tz_now = lambda: event.start - timezone.timedelta(days=1)
+        events = list(event.events)
+        self.assertEqual(len(events), 3)
         duration = events[-1].end - events[-1].start
         self.assertEqual(divmod(duration.total_seconds(), 60)[0], 1320)
