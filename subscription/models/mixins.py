@@ -42,6 +42,10 @@ class AbstractEventMixin(models.Model):
 
     @staticmethod
     def tz_now():
+        """
+        Return an aware or naive datetime.datetime, depending on
+        settings.USE_TZ.
+        """
         return timezone.now()
 
     class Meta:
