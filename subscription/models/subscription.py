@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.conf import settings
 
 from .base import BaseGenericObjectResource
-from .mixins import AbstractEventMixin
+from .mixins import AbstractEventMixin, PeriodicEventMixin
 from ..managers import SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
 
@@ -52,11 +52,7 @@ class SubscriptionLine(AbstractEventMixin):
         abstract = 'subscription' not in settings.INSTALLED_APPS
 
 
-class SubscriptionEvent(AbstractEventMixin):
-    recurrence = models.DurationField(
-        null=True,
-        blank=True
-    )
+class SubscriptionEvent(PeriodicEventMixin):
     subscription_line = models.ForeignKey(
         SubscriptionLine,
         on_delete=models.CASCADE
@@ -69,17 +65,6 @@ class SubscriptionEvent(AbstractEventMixin):
 
         :return:
         """
-        if not self.end and self.recurrence:
-            raise ValidationError(
-                _('The end date is mandatory if self.recurrence is not null')
-            )
-        if self.recurrence and \
-                self.end and \
-                self.start + self.recurrence < self.end:
-            raise ValidationError(
-                _('The start date of the new interval cannot be contained '
-                  'in the current interval')
-            )
         if self.subscription_line.start > self.start:
             raise ValidationError(
                 _('The start date must be after or equal to the start date '
@@ -99,42 +84,6 @@ class SubscriptionEvent(AbstractEventMixin):
                   'of the subscription line')
             )
         super().clean()
-
-    @property
-    def events(self) -> Generator['SubscriptionEvent', None, None]:
-        """
-        Yields active subscription events.
-
-        :return:
-        """
-        while not self.end or self.tz_now() < self.end:
-            if self.subscription_line.end and \
-                    self.start >= self.subscription_line.end:
-                break
-
-            end = self.end \
-                if self.end and self.subscription_line.end and \
-                self.end < self.subscription_line.end \
-                else self.subscription_line.end
-
-            params = {
-                'start': self.start,
-                'subscription_line': self.subscription_line,
-                'end': end
-            }
-
-            event = SubscriptionEvent(**params)
-
-            try:
-                event.clean()
-            except ValidationError:
-                break
-            else:
-                yield event
-                if not (self.end and self.recurrence):
-                    break
-
-            self.__iadd__(self.recurrence)
 
     @property
     def current_event(self) -> Optional['SubscriptionEvent']:
