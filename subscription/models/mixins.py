@@ -11,11 +11,6 @@ class AbstractEventMixin(models.Model):
         null=True,
         blank=True
     )
-    description = models.TextField(
-        max_length=2048,
-        verbose_name=_('Description'),
-        blank=True,
-    )
 
     def clean(self, *args, **kwargs):
         """
