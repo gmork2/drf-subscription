@@ -7,7 +7,7 @@ from subscription.models.mixins import AbstractEventMixin
 
 
 class AbstractEventMixinTestCase(TestCase):
-    fixtures = ['0001_tests.json']
+    fixtures = ['auth.json', 'contenttypes.json', 'subscription.json']
 
     def setUp(self):
         super().setUp()

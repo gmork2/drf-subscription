@@ -8,7 +8,7 @@ from subscription.models import SubscriptionEvent
 
 
 class SubscriptionEventTestCase(TestCase):
-    fixtures = ['0001_tests.json']
+    fixtures = ['auth.json', 'contenttypes.json', 'subscription.json']
 
     def setUp(self):
         super().setUp()

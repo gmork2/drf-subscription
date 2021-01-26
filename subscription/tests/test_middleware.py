@@ -9,7 +9,7 @@ from subscription.models import Resource
 
 
 class SubscriberMiddlewareTestCase(TestCase):
-    fixtures = ['0001_tests.json']
+    fixtures = ['auth.json', 'contenttypes.json', 'subscription.json']
 
     def setUp(self):
         super().setUp()
