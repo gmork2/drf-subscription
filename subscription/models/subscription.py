@@ -95,19 +95,6 @@ class SubscriptionEvent(PeriodicEventMixin):
             elif self.end and now > self.subscription_line.end:
                 break
 
-    def __iadd__(self, duration: timezone.timedelta):
-        """
-        Adds a duration value to the start and end date.
-
-        :param duration:
-        :return:
-        """
-        if self.end:
-            self.end = self.end + duration
-        self.start = self.start + duration
-
-        return self
-
     def __str__(self):
         return '%s (%s): %s [%s - %s]' % (
             self.__class__.__name__,

@@ -37,6 +37,19 @@ class AbstractEventMixin(models.Model):
             self.start <= date if not self.end \
                 else self.start <= date < self.end
 
+    def __iadd__(self, duration: timezone.timedelta):
+        """
+        Adds a duration value to the start and end date.
+
+        :param duration:
+        :return:
+        """
+        if self.end:
+            self.end = self.end + duration
+        self.start = self.start + duration
+
+        return self
+
     @staticmethod
     def tz_now():
         """
