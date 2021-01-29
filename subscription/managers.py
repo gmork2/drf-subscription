@@ -6,8 +6,12 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models.signals import ModelSignal
 from django.utils import timezone
+from django.utils.module_loading import import_string
+from django.apps import apps
 
 from .signals import default_receiver
+
+SUBSCRIPTION_LINE_STRING = "apps.api.models.HardwareFirmwareList"
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +34,22 @@ class SubscriptionQuerySet(models.QuerySet):
         return False
 
     def active(self) -> models.QuerySet:
+        """
+
+        :return:
+        """
+        # model_class = apps.get_model('subscription', 'SubscriptionLine')
+        model_class = import_string(SUBSCRIPTION_LINE_STRING)
+
         return self.filter(
+            ~models.Exists(
+                model_class.objects.filter(
+                    subscription_id=models.OuterRef('pk'),
+                    subscriptionevent__isnull=False
+                )
+            ),
             active=True,
-        )
+        ).exists()
 
 
 class SubscriptionManager(models.Manager):
