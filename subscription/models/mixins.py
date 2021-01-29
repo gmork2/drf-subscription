@@ -36,7 +36,7 @@ class AbstractEventMixin(models.Model):
             )
         return \
             self.start <= date if not self.end \
-                else self.start <= date < self.end
+            else self.start <= date < self.end
 
     def __iadd__(self, duration: timezone.timedelta):
         """
@@ -109,7 +109,7 @@ class PeriodicEventMixin(AbstractEventMixin):
 
             end = self.end \
                 if self.end and self.subscription_line.end and \
-                   self.end < self.subscription_line.end \
+                self.end < self.subscription_line.end \
                 else self.subscription_line.end
 
             params = {
@@ -157,5 +157,28 @@ class MonthlyEventMixin(PeriodicEventMixin):
         self.start = self.start.replace(day=1) + duration
         days = monthrange(self.start.year, self.start.month)[1]
         self.end = self.start.replace(day=days)
+
+        return self
+
+
+class DailyEventMixin(PeriodicEventMixin):
+    @property
+    def recurrence(self):
+        """
+        Adds 1-day to start and end date.
+
+        :return:
+        """
+        return timezone.timedelta(days=1)
+
+    def __iadd__(self, duration: timezone.timedelta):
+        """
+        Adds a duration value to the start and end date.
+
+        :param duration:
+        :return:
+        """
+        self.start = self.start + duration
+        self.end = self.start + duration
 
         return self
