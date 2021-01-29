@@ -92,7 +92,13 @@ class PeriodicEventMixin(AbstractEventMixin):
     @property
     def events(self) -> Generator['PeriodicEventMixin', None, None]:
         """
-        Yields active subscription events.
+        It generates subscription events within the interval of the subscription
+        line from the current date. If the end date is null, this is
+        considered a one-time event and will end on the end date of the
+        subscription line.
+
+        If it has an end date but does not have a recurrence
+        value, it will also be considered a one-time event.
 
         :return:
         """
