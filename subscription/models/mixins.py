@@ -110,18 +110,13 @@ class PeriodicEventMixin(AbstractIntervalMixin):
         :return:
         """
         while not self.end or self.now() < self.end:
-
-            end = self.end \
-                if self.end and self.subscription_line.end and \
-                self.end < self.subscription_line.end \
-                else self.subscription_line.end
+            line = self.subscription_line
 
             event = type(self)(**{
                 'start': self.start,
-                'subscription_line': self.subscription_line,
-                'end': end
+                'subscription_line': line,
+                'end': self.end if self < line else line.end
             })
-
             try:
                 event.clean()
             except ValidationError:
@@ -132,6 +127,12 @@ class PeriodicEventMixin(AbstractIntervalMixin):
                     break
 
             self.__iadd__(self.recurrence)
+
+    def __lt__(self, subscription_line: AbstractIntervalMixin):
+        return \
+            getattr(subscription_line, 'end') and \
+            self.end and \
+            self.end < self.subscription_line.end
 
     class Meta:
         abstract = True
@@ -170,7 +171,6 @@ class DailyEventMixin(PeriodicEventMixin):
     @property
     def recurrence(self):
         """
-        Adds 1-day to start and end date.
 
         :return:
         """
