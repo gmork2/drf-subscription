@@ -122,26 +122,24 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriptionLine)
 class SubscriptionLineAdmin(admin.ModelAdmin):
-    search_fields = ('description',)
     date_hierarchy = 'start'
     list_display = ('id', 'start', 'end', 'subscription')
     list_filter = ('start', 'end')
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'subscription', 'description',)
+            'fields': ('start', 'end', 'subscription')
         }),
     )
 
 
 @admin.register(SubscriptionEvent)
 class SubscriptionEventAdmin(admin.ModelAdmin):
-    search_fields = ('description',)
     date_hierarchy = 'start'
     list_display = ('id', 'start', 'end', 'recurrence', 'subscription_line')
     list_filter = ('start', 'end',)
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'recurrence', 'subscription_line', 'description',)
+            'fields': ('start', 'end', 'recurrence', 'subscription_line')
         }),
     )
 
