@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 
 
-class AbstractEventMixin(models.Model):
+class AbstractIntervalMixin(models.Model):
     start = models.DateTimeField(verbose_name=_('Start date'))
     end = models.DateTimeField(
         verbose_name=_('End date'),
@@ -63,7 +63,7 @@ class AbstractEventMixin(models.Model):
         abstract = True
 
 
-class PeriodicEventMixin(AbstractEventMixin):
+class PeriodicEventMixin(AbstractIntervalMixin):
     subscription_line = None
     recurrence = models.DurationField(
         null=True,

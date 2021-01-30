@@ -1,13 +1,12 @@
-from typing import Generator, Optional
+from typing import Optional
 
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
-from django.utils import timezone
 from django.conf import settings
 
 from .base import BaseGenericObjectResource
-from .mixins import AbstractEventMixin, PeriodicEventMixin
+from .mixins import AbstractIntervalMixin, PeriodicEventMixin
 from ..managers import SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
 
@@ -32,7 +31,7 @@ class Subscription(BaseGenericObjectResource):
         abstract = 'subscription' not in settings.INSTALLED_APPS
 
 
-class SubscriptionLine(AbstractEventMixin):
+class SubscriptionLine(AbstractIntervalMixin):
     subscription = models.ForeignKey(
         Subscription,
         on_delete=models.CASCADE

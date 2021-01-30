@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from subscription.models import SubscriptionLine
-from subscription.models.mixins import AbstractEventMixin
+from subscription.models.mixins import AbstractIntervalMixin
 
 
 class AbstractEventMixinTestCase(TestCase):
@@ -12,7 +12,7 @@ class AbstractEventMixinTestCase(TestCase):
     def setUp(self):
         super().setUp()
         self.line = SubscriptionLine.objects.get(id=1)
-        if not issubclass(self.line.__class__, AbstractEventMixin):
+        if not issubclass(self.line.__class__, AbstractIntervalMixin):
             self.skipTest(
                 f"The object class [{self.line.__class__}] must inherit "
                 f"from AbstractEventMixin"
@@ -20,7 +20,7 @@ class AbstractEventMixinTestCase(TestCase):
         self.now = timezone.now()
 
     def test_mixin_must_be_abstract(self):
-        event = AbstractEventMixin()
+        event = AbstractIntervalMixin()
         self.assertTrue(event._meta.abstract)
 
     def test_event_start_is_prev_end(self):
