@@ -36,7 +36,7 @@ class SubscriptionQuerySet(models.QuerySet):
     def active(self) -> models.QuerySet:
         """
         Returns active subscriptions that have at least one
-        subscription line.
+        subscription line with events.
 
         :return:
         """
@@ -83,12 +83,13 @@ class SubscriptionLineManager(models.Manager):
 
 
 class SubscriptionEventQuerySet(models.QuerySet):
-    def current(self):
+    def current(self, line_id):
         model_class = import_string(SUBSCRIPTION_EVENT_STRING)
         now = model_class.now()
         return self.filter(
             start__date__lte=now,
-            end__date__gt=now
+            end__date__gt=now,
+            subscription_line_id=line_id
         )
 
 
