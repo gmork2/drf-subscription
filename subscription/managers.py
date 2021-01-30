@@ -10,7 +10,8 @@ from django.utils.module_loading import import_string
 
 from .signals import default_receiver
 
-SUBSCRIPTION_LINE_STRING = "apps.api.models.HardwareFirmwareList"
+SUBSCRIPTION_LINE_STRING = "subscription.models.subscription.SubscriptionLine"
+SUBSCRIPTION_EVENT_STRING = "subscription.models.subscription.SubscriptionEvent"
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +83,13 @@ class SubscriptionLineManager(models.Manager):
 
 
 class SubscriptionEventQuerySet(models.QuerySet):
-    pass
+    def current(self):
+        model_class = import_string(SUBSCRIPTION_EVENT_STRING)
+        now = model_class.now()
+        return self.filter(
+            start__date__lte=now,
+            end__date__gt=now
+        )
 
 
 class SubscriptionEventManager(models.Manager):
