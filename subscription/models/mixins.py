@@ -52,7 +52,7 @@ class AbstractEventMixin(models.Model):
         return self
 
     @staticmethod
-    def tz_now():
+    def now():
         """
         Return an aware or naive datetime.datetime, depending on
         settings.USE_TZ.
@@ -109,7 +109,7 @@ class PeriodicEventMixin(AbstractEventMixin):
 
         :return:
         """
-        while not self.end or self.tz_now() < self.end:
+        while not self.end or self.now() < self.end:
 
             end = self.end \
                 if self.end and self.subscription_line.end and \

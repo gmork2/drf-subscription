@@ -87,7 +87,7 @@ class SubscriptionEvent(PeriodicEventMixin):
 
     @property
     def current_event(self) -> Optional['SubscriptionEvent']:
-        now = self.tz_now()
+        now = self.now()
 
         for event in self.events:
             if now in event:
