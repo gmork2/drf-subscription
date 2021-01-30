@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models.signals import ModelSignal
 from django.utils import timezone
 from django.utils.module_loading import import_string
-from django.apps import apps
 
 from .signals import default_receiver
 
@@ -35,12 +34,12 @@ class SubscriptionQuerySet(models.QuerySet):
 
     def active(self) -> models.QuerySet:
         """
+        Returns active subscriptions that have at least one
+        subscription line.
 
         :return:
         """
-        # model_class = apps.get_model('subscription', 'SubscriptionLine')
         model_class = import_string(SUBSCRIPTION_LINE_STRING)
-
         return self.filter(
             ~models.Exists(
                 model_class.objects.filter(
@@ -49,7 +48,7 @@ class SubscriptionQuerySet(models.QuerySet):
                 )
             ),
             active=True,
-        ).exists()
+        )
 
 
 class SubscriptionManager(models.Manager):
