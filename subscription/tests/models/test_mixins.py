@@ -6,7 +6,7 @@ from subscription.models import SubscriptionLine
 from subscription.models.mixins import AbstractIntervalMixin
 
 
-class AbstractEventMixinTestCase(TestCase):
+class AbstractIntervalMixinTestCase(TestCase):
     fixtures = ['auth.json', 'contenttypes.json', 'subscription.json']
 
     def setUp(self):
