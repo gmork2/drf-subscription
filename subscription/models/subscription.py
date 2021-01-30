@@ -110,3 +110,4 @@ class SubscriptionEvent(PeriodicEventMixin):
 
     class Meta:
         abstract = 'subscription' not in settings.INSTALLED_APPS
+        unique_together = ('start', 'end', 'subscription_line')
