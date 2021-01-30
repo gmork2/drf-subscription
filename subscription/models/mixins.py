@@ -160,6 +160,9 @@ class MonthlyEventMixin(PeriodicEventMixin):
 
         return self
 
+    class Meta:
+        abstract = True
+
 
 class DailyEventMixin(PeriodicEventMixin):
     @property
@@ -182,3 +185,6 @@ class DailyEventMixin(PeriodicEventMixin):
         self.end = self.start + duration
 
         return self
+
+    class Meta:
+        abstract = True
