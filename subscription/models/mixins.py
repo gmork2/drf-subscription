@@ -77,12 +77,15 @@ class PeriodicEventMixin(AbstractIntervalMixin):
         """
         super().clean()
 
-        if self.subscription_line and \
-                self.subscription_line.end and \
+        if self.subscription_line is None:
+            raise ValidationError(
+                _('The subscription line cannot be null')
+            )
+        if self.subscription_line.end and \
                 self.start >= self.subscription_line.end:
             raise ValidationError(
                 _('The end date of the subscription line must be after the '
-                  'end date of the event.')
+                  'end date of the event')
             )
         if not self.end and self.recurrence:
             raise ValidationError(
