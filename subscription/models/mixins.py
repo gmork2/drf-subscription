@@ -77,6 +77,13 @@ class PeriodicEventMixin(AbstractEventMixin):
         """
         super().clean()
 
+        if self.subscription_line and \
+                self.subscription_line.end and \
+                self.start >= self.subscription_line.end:
+            raise ValidationError(
+                _('The end date of the subscription line must be after the '
+                  'end date of the event.')
+            )
         if not self.end and self.recurrence:
             raise ValidationError(
                 _('The end date is mandatory if self.recurrence is not null')
@@ -103,22 +110,17 @@ class PeriodicEventMixin(AbstractEventMixin):
         :return:
         """
         while not self.end or self.tz_now() < self.end:
-            if self.subscription_line.end and \
-                    self.start >= self.subscription_line.end:
-                break
 
             end = self.end \
                 if self.end and self.subscription_line.end and \
                 self.end < self.subscription_line.end \
                 else self.subscription_line.end
 
-            params = {
+            event = type(self)(**{
                 'start': self.start,
                 'subscription_line': self.subscription_line,
                 'end': end
-            }
-
-            event = type(self)(**params)
+            })
 
             try:
                 event.clean()
