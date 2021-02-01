@@ -6,7 +6,8 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 
 from .base import BaseGenericObjectResource
-from .mixins import AbstractIntervalMixin, PeriodicEventMixin
+from .mixins import MonthlyEventMixin
+from .abstract import AbstractInterval, AbstractPeriodicEvent
 from ..managers import SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
 
@@ -31,7 +32,7 @@ class Subscription(BaseGenericObjectResource):
         abstract = 'subscription' not in settings.INSTALLED_APPS
 
 
-class SubscriptionLine(AbstractIntervalMixin):
+class SubscriptionLine(AbstractInterval):
     subscription = models.ForeignKey(
         Subscription,
         on_delete=models.CASCADE
@@ -51,7 +52,7 @@ class SubscriptionLine(AbstractIntervalMixin):
         abstract = 'subscription' not in settings.INSTALLED_APPS
 
 
-class SubscriptionEvent(PeriodicEventMixin):
+class SubscriptionEvent(AbstractPeriodicEvent):
     subscription_line = models.ForeignKey(
         SubscriptionLine,
         on_delete=models.CASCADE
