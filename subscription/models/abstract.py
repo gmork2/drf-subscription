@@ -28,6 +28,14 @@ class AbstractInterval(models.Model):
                 _('The start of the event cannot be after the end.')
             )
 
+    @staticmethod
+    def now():
+        """
+        Return an aware or naive datetime.datetime, depending on
+        settings.USE_TZ.
+        """
+        return timezone.now()
+
     def __contains__(self, date: timezone.datetime):
         if not isinstance(date, timezone.datetime):
             raise TypeError(
@@ -49,14 +57,6 @@ class AbstractInterval(models.Model):
         self.start = self.start + duration
 
         return self
-
-    @staticmethod
-    def now():
-        """
-        Return an aware or naive datetime.datetime, depending on
-        settings.USE_TZ.
-        """
-        return timezone.now()
 
     class Meta:
         abstract = True
@@ -98,11 +98,13 @@ class AbstractPeriodicEvent(AbstractInterval):
                   'in the current interval')
             )
 
-    def __lt__(self, interval: AbstractInterval):
-        return \
-            getattr(interval, 'end') and \
-            self.end and \
-            self.end < interval.end
+    @property
+    def _recurrence(self):
+        """
+
+        :return:
+        """
+        return self.recurrence
 
     @property
     def events(self) -> Generator['AbstractPeriodicEvent', None, None]:
@@ -131,10 +133,16 @@ class AbstractPeriodicEvent(AbstractInterval):
                 break
             else:
                 yield event
-                if not (self.end and self.recurrence):
+                if not (self.end and self._recurrence):
                     break
 
-            self.__iadd__(self.recurrence)
+            self.__iadd__(self._recurrence)
+
+    def __lt__(self, interval: AbstractInterval):
+        return \
+            getattr(interval, 'end') and \
+            self.end and \
+            self.end < interval.end
 
     class Meta:
         abstract = True

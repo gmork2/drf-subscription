@@ -5,7 +5,7 @@ from django.utils import timezone
 
 class MonthlyEventMixin:
     @property
-    def recurrence(self):
+    def _recurrence(self):
         """
         Returns the number of days in the current month.
 
@@ -31,7 +31,7 @@ class MonthlyEventMixin:
 
 class DailyEventMixin:
     @property
-    def recurrence(self):
+    def _recurrence(self):
         """
 
         :return:
