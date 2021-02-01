@@ -136,7 +136,7 @@ class ResourceManager(models.Manager):
             using=self._db
         )
 
-    def related_models(self, **kwargs) -> List[Type[models.Model]]:
+    def related_models(self) -> List[Type[models.Model]]:
         """
         Returns a list with each of the models related to any existing
         active resource.

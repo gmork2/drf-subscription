@@ -131,11 +131,11 @@ class PeriodicEventMixin(AbstractIntervalMixin):
 
             self.__iadd__(self.recurrence)
 
-    def __lt__(self, subscription_line: AbstractIntervalMixin):
+    def __lt__(self, interval: AbstractIntervalMixin):
         return \
-            getattr(subscription_line, 'end') and \
+            getattr(interval, 'end') and \
             self.end and \
-            self.end < self.subscription_line.end
+            self.end < interval.end
 
     class Meta:
         abstract = True
