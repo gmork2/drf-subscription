@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 
 from .base import BaseGenericObjectResource
-from .mixins import MonthlyEventMixin
+from .mixins import MonthlyEventMixin, DailyEventMixin
 from .abstract import AbstractInterval, AbstractPeriodicEvent
 from ..managers import SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
@@ -113,3 +113,13 @@ class SubscriptionEvent(AbstractPeriodicEvent):
         abstract = 'subscription' not in settings.INSTALLED_APPS
         unique_together = ('start', 'end', 'subscription_line')
         get_latest_by = ('start',)
+
+
+class MonthlySubscriptionEvent(MonthlyEventMixin, SubscriptionEvent):
+    class Meta:
+        proxy = True
+
+
+class DailySubscriptionEvent(DailyEventMixin, SubscriptionEvent):
+    class Meta:
+        proxy = True
