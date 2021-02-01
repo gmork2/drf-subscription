@@ -86,7 +86,7 @@ class SubscriptionEvent(AbstractPeriodicEvent):
         super().clean()
 
     @property
-    def current_event(self) -> Optional['SubscriptionEvent']:
+    def current(self) -> Optional['SubscriptionEvent']:
         now = self.now()
 
         for event in self.events:
