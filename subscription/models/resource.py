@@ -70,7 +70,7 @@ class Resource(BaseGenericObjectResource):
         :return:
         """
         return \
-            self.subscription_event.current_event and \
+            self.subscription_event.current and \
             self.subscription_event.subscription_line.subscription.active and \
             self.active
 
