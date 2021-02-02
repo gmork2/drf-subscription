@@ -1,15 +1,44 @@
-version: '3'
+version: '3.8'
 
 services:
   drf-subscription:
     build: .
     image: drf-subscription:latest
-    command: >
-      bash -c "python manage.py migrate
-      && python manage.py runserver 0.0.0.0:8000"
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/src
     ports:
       - "8000:8000"
     container_name: drf-subscription
     tty: true
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa2_i8%*4r0-=z-+_mz5r-!qeed@(-a_r(g@k9jo9y4r38%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+  celery:
+    build: .
+    command: celery -A sample worker -l info
+    volumes:
+      - .:/usr/src/app/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa2_i8%*4r0-=z-+_mz5r-!qeed@(-a_r(g@k9jo9y4r38%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    depends_on:
+      - redis
+  celery-beat:
+    build: .
+    command: celery -A sample beat -l info
+    volumes:
+      - .:/usr/src/app/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa2_i8%*4r0-=z-+_mz5r-!qeed@(-a_r(g@k9jo9y4r38%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    depends_on:
+      - redis
+

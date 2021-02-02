@@ -1,0 +1,19 @@
+amqp==5.0.5
+asgiref==3.2.10
+billiard==3.6.3.0
+celery==5.0.5
+click==7.1.2
+click-didyoumean==0.0.3
+click-plugins==1.1.1
+click-repl==0.1.6
+Django==3.1.2
+djangorestframework==3.12.1
+kombu==5.0.2
+# pkg-resources==0.0.0
+prompt-toolkit==3.0.14
+pytz==2020.1
+redis==3.5.3
+six==1.15.0
+sqlparse==0.4.1
+vine==5.0.0
+wcwidth==0.2.5
