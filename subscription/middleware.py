@@ -1,7 +1,5 @@
 from django.apps import apps
 
-from .signals import default_receiver
-
 
 class SubscriberMiddleware:
     def __init__(self, get_response):
@@ -12,11 +10,11 @@ class SubscriberMiddleware:
         :param get_response:
         """
         self.get_response = get_response
-        resource_class = apps.get_model('subscription', 'Resource')
+        model_class = apps.get_model('subscription', 'Resource')
 
-        resource_class.objects.connect(
-            resource_class.signal,
-            resource_class.receiver
+        model_class.objects.connect(
+            model_class.signal,
+            model_class.receiver
         )
 
     def __call__(self, request):
