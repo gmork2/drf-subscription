@@ -42,10 +42,11 @@ class SubscriptionQuerySet(models.QuerySet):
         """
         model_class = import_string(SUBSCRIPTION_LINE_STRING)
         return self.filter(
-            ~models.Exists(
+            models.Exists(
                 model_class.objects.filter(
                     subscription_id=models.OuterRef('pk'),
-                    subscriptionevent__isnull=False
+                    subscriptionevent__isnull=False,
+                    end__gt=model_class.now()
                 )
             ),
             active=True,
