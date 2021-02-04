@@ -2,5 +2,6 @@
 
 python manage.py migrate
 python manage.py collectstatic --no-input --clear
+pyhton manage.py loaddata
 
 exec "$@"
