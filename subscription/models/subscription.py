@@ -104,11 +104,6 @@ class SubscriptionEvent(AbstractPeriodicEvent):
             self.end
         )
 
-    def __len__(self):
-        if self.end:
-            return self.end - self.start
-        return float('inf')
-
     class Meta:
         abstract = 'subscription' not in settings.INSTALLED_APPS
         unique_together = ('start', 'end', 'subscription_line')
