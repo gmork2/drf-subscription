@@ -5,13 +5,12 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.conf import settings
 
-from .base import BaseGenericObjectResource
 from .mixins import MonthlyEventMixin, DailyEventMixin
-from .abstract import AbstractInterval, AbstractPeriodicEvent
+from .abstract import AbstractInterval, AbstractPeriodicEvent, AbstractGenericObjectResource
 from ..managers import SubscriptionManager, SubscriptionLineManager, SubscriptionEventManager
 
 
-class Subscription(BaseGenericObjectResource):
+class Subscription(AbstractGenericObjectResource):
     name = models.CharField(
         max_length=128,
         help_text=_('Subscription name')

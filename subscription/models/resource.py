@@ -10,14 +10,14 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from .base import BaseGenericObjectResource
+from .abstract import AbstractGenericObjectResource
 from .subscription import SubscriptionEvent
 from ..managers import ResourceManager
 from ..signals import default_receiver
 from ..validators import ImportCallBackValidator
 
 
-class Resource(BaseGenericObjectResource):
+class Resource(AbstractGenericObjectResource):
     INCLUDE_HIDDEN: ClassVar[bool] = True
 
     receiver: Callable = default_receiver
