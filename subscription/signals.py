@@ -1,4 +1,4 @@
-from typing import Type, Union
+from typing import Type
 import warnings
 
 from django.db import models
