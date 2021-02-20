@@ -1,4 +1,4 @@
-from typing import Callable, ClassVar
+from typing import ClassVar
 
 import ast
 
@@ -12,6 +12,7 @@ from rest_framework import serializers
 
 from .abstract import AbstractGenericObjectResource
 from .subscription import SubscriptionEvent
+from .decorators import connect_signal
 from ..managers import ResourceManager
 from ..signals import default_receiver
 from ..validators import ImportCallBackValidator
@@ -19,9 +20,6 @@ from ..validators import ImportCallBackValidator
 
 class Resource(AbstractGenericObjectResource):
     INCLUDE_HIDDEN: ClassVar[bool] = True
-
-    receiver: Callable = default_receiver
-    signal: ModelSignal = post_save
 
     subscription_event = models.ForeignKey(
         SubscriptionEvent,
@@ -107,6 +105,7 @@ class Resource(AbstractGenericObjectResource):
             except ValueError as e:
                 raise ValidationError(e)
 
+    @connect_signal(signal=post_save, receiver=default_receiver)
     def save(self, *args, **kwargs):
         """
         Fills content_object_fields with a dictionary that contains the
@@ -120,8 +119,7 @@ class Resource(AbstractGenericObjectResource):
         """
         model_class = self.content_type.model_class()
         self.content_object_fields = self.get_values_from_related_object(model_class)
-        if self._state.adding:
-            self.signal.connect(self.receiver, sender=model_class)
+
         return super().save(*args, **kwargs)
 
     def __str__(self):

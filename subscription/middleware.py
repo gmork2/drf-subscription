@@ -1,4 +1,5 @@
 from django.apps import apps
+from subscription.models.decorators import DEFAULT_RECEIVER, DEFAULT_SIGNAL
 
 
 class SubscriberMiddleware:
@@ -13,8 +14,8 @@ class SubscriberMiddleware:
         model_class = apps.get_model('subscription', 'Resource')
 
         model_class.objects.connect(
-            model_class.signal,
-            model_class.receiver
+            DEFAULT_SIGNAL,
+            DEFAULT_RECEIVER
         )
 
     def __call__(self, request):

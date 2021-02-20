@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from subscription.middleware import SubscriberMiddleware
 from subscription.models import Resource
+from subscription.models.decorators import DEFAULT_SIGNAL, DEFAULT_RECEIVER
 
 
 class SubscriberMiddlewareTestCase(TestCase):
@@ -13,8 +14,8 @@ class SubscriberMiddlewareTestCase(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.signal: ModelSignal = Resource.signal
-        self.recv: Callable = Resource.receiver
+        self.signal: ModelSignal = DEFAULT_SIGNAL
+        self.recv: Callable = DEFAULT_RECEIVER
         self.user = User.objects.create(username='test')
 
     def test_empty_resources(self):
