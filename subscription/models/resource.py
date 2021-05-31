@@ -109,9 +109,7 @@ class Resource(AbstractGenericObjectResource):
     def save(self, *args, **kwargs):
         """
         Fills content_object_fields with a dictionary that contains the
-        field-value pair of the related model, in addition to connecting
-        the default receiver with that class through the signal, prior
-        to saving the instance.
+        field-value pair of the related model.
 
         :param args:
         :param kwargs:
