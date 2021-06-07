@@ -5,5 +5,3 @@ install:
   - pip install -r requirements_dev.txt
 script:
   - python manage.py test
-env:
-  - DJANGO_ALLOWED_HOSTS=127.0.0.1
