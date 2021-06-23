@@ -19,10 +19,6 @@ class AbstractIntervalMixinTestCase(TestCase):
             )
         self.now = timezone.now()
 
-    def test_mixin_must_be_abstract(self):
-        event = AbstractInterval()
-        self.assertTrue(event._meta.abstract)
-
     def test_event_start_is_prev_end(self):
         self.line.start = self.now
         self.line.end = self.now + timezone.timedelta(seconds=1)
