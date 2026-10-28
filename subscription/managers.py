@@ -27,7 +27,7 @@ class SubscriptionQuerySet(models.QuerySet):
     def subscribable(self, obj: models.Model) -> bool:
         try:
             ct = ContentType.objects.get_for_model(obj.__class__)
-            self.get(object_pk=obj, content_type=ct)
+            self.get(object_pk=str(obj.pk), content_type=ct)
         except self.model.DoesNotExist:
             return True
 
@@ -53,12 +53,8 @@ class SubscriptionQuerySet(models.QuerySet):
         )
 
 
-class SubscriptionManager(models.Manager):
-    def get_queryset(self) -> SubscriptionQuerySet:
-        return SubscriptionQuerySet(
-            self.model,
-            using=self._db
-        )
+class SubscriptionManager(models.Manager.from_queryset(SubscriptionQuerySet)):
+    pass
 
 
 class SubscriptionLineQuerySet(models.QuerySet):
@@ -75,12 +71,8 @@ class SubscriptionLineQuerySet(models.QuerySet):
         )
 
 
-class SubscriptionLineManager(models.Manager):
-    def get_queryset(self) -> SubscriptionLineQuerySet:
-        return SubscriptionLineQuerySet(
-            self.model,
-            using=self._db
-        )
+class SubscriptionLineManager(models.Manager.from_queryset(SubscriptionLineQuerySet)):
+    pass
 
 
 class SubscriptionEventQuerySet(models.QuerySet):
@@ -94,12 +86,8 @@ class SubscriptionEventQuerySet(models.QuerySet):
         )
 
 
-class SubscriptionEventManager(models.Manager):
-    def get_queryset(self) -> SubscriptionEventQuerySet:
-        return SubscriptionEventQuerySet(
-            self.model,
-            using=self._db
-        )
+class SubscriptionEventManager(models.Manager.from_queryset(SubscriptionEventQuerySet)):
+    pass
 
 
 class ResourceQuerySet(models.QuerySet):
@@ -130,13 +118,7 @@ class ResourceQuerySet(models.QuerySet):
         )
 
 
-class ResourceManager(models.Manager):
-    def get_queryset(self) -> ResourceQuerySet:
-        return ResourceQuerySet(
-            self.model,
-            using=self._db
-        )
-
+class ResourceManager(models.Manager.from_queryset(ResourceQuerySet)):
     def related_models(self) -> List[Type[models.Model]]:
         """
         Returns a list with each of the models related to any existing

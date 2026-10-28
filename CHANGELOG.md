@@ -12,3 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - REST API router (admin-only) exposing subscriptions, lines, events and resources.
 - Semantic Versioning via `scripts/bump_version.py`.
+- Expanded test coverage (managers, signals, API views, resource model and integration).
