@@ -9,14 +9,28 @@ from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
 from .signals import callback_receiver
 
 
+def _signal_and_receiver(model_or_instance):
+    """
+    Return the (signal, receiver) pair used to wire a model to its resource
+    callbacks, or (None, None) when the model does not manage signals
+    (e.g. Subscription, which has no callback).
+    """
+    signal = getattr(model_or_instance, 'signal', None)
+    receiver = getattr(model_or_instance, 'receiver', None)
+    return signal, receiver
+
+
 def activate(
         modeladmin: admin.ModelAdmin,
         request: WSGIRequest,
         queryset: QuerySet
 ):
+    for instance in queryset:
+        signal, receiver = _signal_and_receiver(instance)
+        if signal is not None and receiver is not None:
+            model_class = instance.content_type.model_class()
+            signal.connect(receiver, sender=model_class)
     queryset.update(active=True)
-    model = queryset.model
-    model.objects.connect(model.signal, model.receiver, model)
     modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
 
 
@@ -28,9 +42,12 @@ def deactivate(
         request: WSGIRequest,
         queryset: QuerySet
 ):
+    for instance in queryset:
+        signal, receiver = _signal_and_receiver(instance)
+        if signal is not None and receiver is not None:
+            model_class = instance.content_type.model_class()
+            signal.disconnect(receiver, sender=model_class)
     queryset.update(active=False)
-    model = queryset.model
-    model.objects.disconnect(model.signal, model.receiver, model)
     modeladmin.message_user(request, _('Total deactivated: %s' % queryset.count()))
 
 

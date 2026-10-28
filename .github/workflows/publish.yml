@@ -1,0 +1,49 @@
+name: Publish
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'subscription/__init__.py'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+
+      - name: Detect version change
+        id: version
+        run: |
+          current="$(sed -n 's/^__version__ = "\([^"]*\)"/\1/p' subscription/__init__.py)"
+          previous="$(git show HEAD~1:subscription/__init__.py 2>/dev/null | sed -n 's/^__version__ = "\([^"]*\)"/\1/p' || true)"
+          echo "current=${current} previous=${previous}"
+          if [ -n "${current}" ] && [ "${current}" != "${previous}" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build package
+        if: steps.version.outputs.changed == 'true'
+        run: uv build
+
+      - name: Publish to PyPI
+        if: steps.version.outputs.changed == 'true'
+        run: uv publish

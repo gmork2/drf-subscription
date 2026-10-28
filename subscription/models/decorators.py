@@ -27,7 +27,7 @@ class ConnectSignalDecorator(object):
 
             if state.adding:
                 self.signal.connect(self.receiver, sender=model_class)
-            func(*args)
+            return func(*args, **kwargs)
 
         return wrapper
 

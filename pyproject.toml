@@ -1,0 +1,47 @@
+[project]
+name = "drf-subscription"
+dynamic = ["version"]
+description = "A generic subscription app for Django."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "GPL-3.0-only"
+authors = [
+    { name = "gmork2" },
+]
+keywords = ["django", "djangorestframework", "drf", "subscription"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 5.1",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "django>=5.1,<6",
+    "djangorestframework>=3.15,<4",
+]
+
+[project.urls]
+Repository = "https://github.com/gmork2/drf-subscription"
+
+[dependency-groups]
+dev = [
+    "celery[redis]>=5.3",
+    "redis>=5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["subscription"]
+
+[tool.hatch.version]
+path = "subscription/__init__.py"

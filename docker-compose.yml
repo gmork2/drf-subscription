@@ -4,9 +4,9 @@ services:
   drf-subscription:
     build: .
     image: drf-subscription:latest
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uv run python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/src
+      - .:/usr/src/app
     ports:
       - "8000:8000"
     container_name: drf-subscription
@@ -21,9 +21,9 @@ services:
     image: redis:alpine
   celery:
     build: .
-    command: celery -A sample worker -l info
+    command: uv run celery -A sample worker -l info
     volumes:
-      - .:/usr/src/app/
+      - .:/usr/src/app
     environment:
       - DEBUG=1
       - SECRET_KEY=dbaa2_i8%*4r0-=z-+_mz5r-!qeed@(-a_r(g@k9jo9y4r38%m
@@ -32,9 +32,9 @@ services:
       - redis
   celery-beat:
     build: .
-    command: celery -A sample beat -l info
+    command: uv run celery -A sample beat -l info
     volumes:
-      - .:/usr/src/app/
+      - .:/usr/src/app
     environment:
       - DEBUG=1
       - SECRET_KEY=dbaa2_i8%*4r0-=z-+_mz5r-!qeed@(-a_r(g@k9jo9y4r38%m
