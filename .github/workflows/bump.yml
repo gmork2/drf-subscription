@@ -15,10 +15,9 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
-  release:
+  bump:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,23 +41,3 @@ jobs:
 
       - name: Bump, commit, tag and push
         run: uv run python scripts/bump_version.py ${{ inputs.part }} --commit --tag --push
-
-      - name: Build package
-        run: uv build
-
-      - name: Publish to PyPI
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          if [ -n "${PYPI_TOKEN}" ]; then
-            uv publish --token "${PYPI_TOKEN}"
-          else
-            uv publish
-          fi
-
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION="$(uv run python -c 'import subscription; print(subscription.__version__)')"
-          gh release create "v${VERSION}" --generate-notes --title "v${VERSION}" || echo "Release v${VERSION} already exists"

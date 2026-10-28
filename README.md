@@ -35,16 +35,16 @@ uv run python scripts/bump_version.py patch --tag      # and create the git tag 
 
 ## Release
 
-Publishing to PyPI is automatic: when a version change in `subscription/__init__.py`
-is pushed to the default branch, GitHub Actions builds and publishes it to PyPI
-(via trusted publishing).
+Releases are a two-step process handled by two GitHub Actions workflows:
 
-You can trigger a release in two ways:
+1. **Bump version** (Actions → Bump version → Run workflow): choose `patch`,
+   `minor` or `major`. It bumps the version, updates the changelog, commits,
+   tags and pushes.
+2. **Publish** (Actions → Publish → Run workflow): builds the package, publishes
+   it to PyPI and creates the GitHub Release for the current version.
 
-1. **From GitHub** — go to **Actions → Bump version → Run workflow** and choose
-   `patch`, `minor` or `major`. It bumps the version, commits, tags, pushes and
-   publishes.
-2. **Locally** — bump and push; publication happens automatically:
+Alternatively, you can do it locally — bumping and pushing triggers the Publish
+workflow automatically:
 
 ```sh
 uv run python scripts/bump_version.py patch --commit --tag --push
@@ -60,9 +60,11 @@ Publication uses **Trusted Publishing** (recommended) or an API token.
 2. Click **Add a new trusted publisher** and fill in:
    - **Owner**: `gmork2`
    - **Repository**: `drf-subscription`
-   - **Workflow name**: `bump.yml` (add `publish.yml` too, or leave it blank to allow all workflows)
+   - **Workflow name**: `publish.yml`
    - **Environment name**: leave blank
 3. Save.
+
+Only `publish.yml` publishes to PyPI, so a single trusted publisher is enough.
 
 ### API token (alternative)
 
