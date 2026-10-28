@@ -49,3 +49,22 @@ You can trigger a release in two ways:
 ```sh
 uv run python scripts/bump_version.py patch --commit --tag --push
 ```
+
+## PyPI publishing setup
+
+Publication uses **Trusted Publishing** (recommended) or an API token.
+
+### Trusted Publishing (recommended)
+
+1. On PyPI, go to your project → **Settings → Publishing**.
+2. Click **Add a new trusted publisher** and fill in:
+   - **Owner**: `gmork2`
+   - **Repository**: `drf-subscription`
+   - **Workflow name**: `bump.yml` (add `publish.yml` too, or leave it blank to allow all workflows)
+   - **Environment name**: leave blank
+3. Save.
+
+### API token (alternative)
+
+Create an API token on PyPI and add it as a GitHub Actions secret named
+`PYPI_TOKEN`. If set, it takes precedence over trusted publishing.
