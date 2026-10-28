@@ -7,7 +7,7 @@ on:
       - 'subscription/__init__.py'
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -47,3 +47,16 @@ jobs:
       - name: Publish to PyPI
         if: steps.version.outputs.changed == 'true'
         run: uv publish
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(uv run python -c 'import subscription; print(subscription.__version__)')"
+          TAG="v${VERSION}"
+          if ! git rev-parse "refs/tags/${TAG}" >/dev/null 2>&1; then
+            git tag "${TAG}"
+            git push origin "refs/tags/${TAG}"
+          fi
+          gh release create "${TAG}" --generate-notes --title "${TAG}" || echo "Release ${TAG} already exists"

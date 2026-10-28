@@ -69,13 +69,25 @@ def commit_files(new_version):
 
 def create_tag(new_version):
     tag = f"v{new_version}"
-    subprocess.run(["git", "tag", "-a", tag, "-m", f"Release {tag}"], check=True)
-    print(f"Created git tag {tag}")
+    exists = subprocess.run(
+        ["git", "rev-parse", "-q", "--verify", f"refs/tags/{tag}"],
+        capture_output=True,
+    ).returncode == 0
+    command = ["git", "tag"]
+    if exists:
+        command.append("-f")
+        print(f"Moving existing git tag {tag}")
+    command += ["-a", tag, "-m", f"Release {tag}"]
+    subprocess.run(command, check=True)
+    print(f"Created git tag {tag}" if not exists else f"Updated git tag {tag}")
 
 
-def push():
+def push(new_version):
     subprocess.run(["git", "push"], check=True)
-    subprocess.run(["git", "push", "--tags"], check=True)
+    subprocess.run(
+        ["git", "push", "origin", f"refs/tags/v{new_version}", "--force"],
+        check=True,
+    )
     print("Pushed commits and tags")
 
 
@@ -126,7 +138,7 @@ def main(argv=None):
         create_tag(new_version)
 
     if args.push:
-        push()
+        push(new_version)
 
 
 if __name__ == "__main__":
