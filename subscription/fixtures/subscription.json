@@ -3,7 +3,7 @@
     "model": "subscription.subscription",
     "pk": 1,
     "fields": {
-      "content_type": 3,
+      "content_type": ["auth", "group"],
       "object_pk": "1",
       "name": "admin",
       "active": true
@@ -70,7 +70,7 @@
     "model": "subscription.resource",
     "pk": 1,
     "fields": {
-      "content_type": 4,
+      "content_type": ["auth", "user"],
       "object_pk": "1",
       "subscription_event": 1,
       "content_object_fields": "{'id': 1, 'password': 'pbkdf2_sha256$216000$xtfjKAE98JvB$0AvZdlrkspht30SZQTeKjNc2vJuuj005g5uckjDFAu4=', 'last_login': '2020-12-20T11:44:28.826780Z', 'is_superuser': True, 'username': 'test', 'first_name': '', 'last_name': '', 'email': 'test@localhost', 'is_staff': True, 'is_active': True, 'date_joined': '2020-11-23T00:23:36Z', 'groups': [], 'user_permissions': []}",
@@ -82,7 +82,7 @@
     "model": "subscription.resource",
     "pk": 2,
     "fields": {
-      "content_type": 3,
+      "content_type": ["auth", "group"],
       "object_pk": "1",
       "subscription_event": 1,
       "content_object_fields": "",
