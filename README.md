@@ -24,6 +24,87 @@ A generic subscription app for django.
 
 See [docs/index.md](docs/index.md) for the full documentation.
 
+## Usage example
+
+Say your SaaS bills premium users on the **first day of every month**.
+You already have a `User` model; this is all you need to schedule the
+billing callback while the subscription is active:
+
+```python
+# billing/subscriptions.py
+from datetime import timedelta
+
+from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+
+from subscription.models import (
+    Subscription, SubscriptionLine, SubscriptionEvent, Resource,
+)
+
+
+def subscribe_premium(user):
+    user_ct = ContentType.objects.get_for_model(user)
+    now = timezone.now()
+
+    subscription = Subscription.objects.create(
+        name=f'Premium - {user.username}',
+        active=True,
+        content_type=user_ct,
+        object_pk=str(user.pk),
+    )
+    line = SubscriptionLine.objects.create(
+        subscription=subscription,
+        start=now,
+        end=now + timedelta(days=365),   # one-year plan
+    )
+    # First day of every month, one day long.
+    event = SubscriptionEvent.objects.create(
+        subscription_line=line,
+        start=now,
+        end=now + timedelta(days=1),
+        frequency='MONTHLY',
+        by_month_day=[1],
+    )
+    Resource.objects.create(
+        subscription_event=event,
+        content_type=user_ct,
+        object_pk=str(user.pk),
+        callback='billing.tasks.charge_user',
+    )
+```
+
+The callback receives the resource; the user is the generic relation
+and `payload` holds the field snapshot:
+
+```python
+# billing/tasks.py
+def charge_user(sender, instance, **kwargs):
+    user = instance.content_object          # the subscribed User
+    fields = instance.payload               # stored field values
+    ...                                     # charge the card, send the invoice
+```
+
+To notify an external service instead, drop the `callback` and point
+the resource at a webhook:
+
+```python
+    Resource.objects.create(
+        subscription_event=event,
+        content_type=user_ct,
+        object_pk=str(user.pk),
+        webhook_url='https://billing.example.com/hooks/premium/',
+        webhook_secret='shared-secret',     # HMAC-SHA256 signature
+    )
+```
+
+Finally, run the periodic dispatch (cron or Celery beat, see
+[docs/index.md](docs/index.md)); it executes each resource once per
+occurrence and keeps an audit trail in `ResourceExecution`:
+
+```sh
+python manage.py subscription_dispatch
+```
+
 ## Installation
 
 Dependencies are managed exclusively with [uv](https://docs.astral.sh/uv/):
