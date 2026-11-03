@@ -42,5 +42,11 @@ def default_receiver(
     queryset = Resource.objects.all().related_objects(instance)
     for resource in queryset:
         if resource.is_ready:
+            # Refresh the field snapshot with the current values of the
+            # related object without triggering a full model save.
+            resource.content_object_fields = \
+                resource.get_values_from_related_object(sender)
+            Resource.objects.filter(pk=resource.pk).update(
+                content_object_fields=resource.content_object_fields
+            )
             callback_receiver(sender, resource, queryset=queryset, **kwargs)
-            resource.save()

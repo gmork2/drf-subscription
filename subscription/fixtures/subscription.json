@@ -42,7 +42,8 @@
     "fields": {
       "start": "2020-01-01T12:00:00Z",
       "end": null,
-      "recurrence": null,
+      "frequency": null,
+      "interval": 1,
       "subscription_line": 1
     }
   },
@@ -52,7 +53,8 @@
     "fields": {
       "start": "2020-01-01T12:00:00Z",
       "end": "2020-01-02T12:00:00Z",
-      "recurrence": "24:00:00",
+      "frequency": "DAILY",
+      "interval": 1,
       "subscription_line": 2
     }
   },
@@ -62,7 +64,8 @@
     "fields": {
       "start": "2020-01-01T12:00:00Z",
       "end": "2020-01-02T12:00:00Z",
-      "recurrence": "25:00:00",
+      "frequency": "DAILY",
+      "interval": 1,
       "subscription_line": 3
     }
   },
@@ -73,7 +76,21 @@
       "content_type": ["auth", "user"],
       "object_pk": "1",
       "subscription_event": 1,
-      "content_object_fields": "{'id': 1, 'password': 'pbkdf2_sha256$216000$xtfjKAE98JvB$0AvZdlrkspht30SZQTeKjNc2vJuuj005g5uckjDFAu4=', 'last_login': '2020-12-20T11:44:28.826780Z', 'is_superuser': True, 'username': 'test', 'first_name': '', 'last_name': '', 'email': 'test@localhost', 'is_staff': True, 'is_active': True, 'date_joined': '2020-11-23T00:23:36Z', 'groups': [], 'user_permissions': []}",
+      "content_object_fields": {
+        "id": 1,
+        "password": "pbkdf2_sha256$216000$xtfjKAE98JvB$0AvZdlrkspht30SZQTeKjNc2vJuuj005g5uckjDFAu4=",
+        "last_login": "2020-12-20T11:44:28.826780Z",
+        "is_superuser": true,
+        "username": "test",
+        "first_name": "",
+        "last_name": "",
+        "email": "test@localhost",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-11-23T00:23:36Z",
+        "groups": [],
+        "user_permissions": []
+      },
       "callback": "subscription.tests.utils.dummy",
       "active": true
     }
@@ -85,7 +102,7 @@
       "content_type": ["auth", "group"],
       "object_pk": "1",
       "subscription_event": 1,
-      "content_object_fields": "",
+      "content_object_fields": {},
       "callback": null,
       "active": true
     }

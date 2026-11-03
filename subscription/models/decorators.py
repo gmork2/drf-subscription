@@ -9,6 +9,18 @@ DEFAULT_SIGNAL = post_save
 DEFAULT_RECEIVER = default_receiver
 
 
+def signal_uid(model_class) -> str:
+    """
+    Stable dispatch_uid shared by every connection point (AppConfig,
+    admin actions, dynamic connection on Resource.save) so repeated
+    connections never stack duplicate receivers.
+
+    :param model_class:
+    :return:
+    """
+    return 'subscription.default_receiver.%s' % model_class._meta.label
+
+
 class ConnectSignalDecorator(object):
     def __init__(
             self,
@@ -26,7 +38,11 @@ class ConnectSignalDecorator(object):
             state = getattr(args[0], '_state')
 
             if state.adding:
-                self.signal.connect(self.receiver, sender=model_class)
+                self.signal.connect(
+                    self.receiver,
+                    sender=model_class,
+                    dispatch_uid=signal_uid(model_class),
+                )
             return func(*args, **kwargs)
 
         return wrapper

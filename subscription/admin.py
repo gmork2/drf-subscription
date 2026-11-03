@@ -5,7 +5,8 @@ from django.contrib.messages import constants
 from django.db.models import QuerySet
 
 from .managers import SubscriptionQuerySet, ResourceQuerySet
-from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource
+from .models import Subscription, SubscriptionLine, SubscriptionEvent, Resource, ResourceExecution
+from .models.decorators import signal_uid
 from .signals import callback_receiver
 
 
@@ -29,7 +30,11 @@ def activate(
         signal, receiver = _signal_and_receiver(instance)
         if signal is not None and receiver is not None:
             model_class = instance.content_type.model_class()
-            signal.connect(receiver, sender=model_class)
+            signal.connect(
+                receiver,
+                sender=model_class,
+                dispatch_uid=signal_uid(model_class),
+            )
     queryset.update(active=True)
     modeladmin.message_user(request, _('Total activated: %s' % queryset.count()))
 
@@ -46,7 +51,11 @@ def deactivate(
         signal, receiver = _signal_and_receiver(instance)
         if signal is not None and receiver is not None:
             model_class = instance.content_type.model_class()
-            signal.disconnect(receiver, sender=model_class)
+            signal.disconnect(
+                receiver,
+                sender=model_class,
+                dispatch_uid=signal_uid(model_class),
+            )
     queryset.update(active=False)
     modeladmin.message_user(request, _('Total deactivated: %s' % queryset.count()))
 
@@ -82,7 +91,11 @@ def connect(
         receiver = instance.__class__.receiver
         signal = instance.__class__.signal
         model_class = instance.content_type.model_class()
-        signal.connect(receiver, sender=model_class)
+        signal.connect(
+            receiver,
+            sender=model_class,
+            dispatch_uid=signal_uid(model_class),
+        )
 
     modeladmin.message_user(request, _('Done!'))
 
@@ -102,7 +115,11 @@ def disconnect(
         signal = instance.__class__.signal
         model_class = instance.content_type.model_class()
 
-        if not signal.disconnect(receiver, sender=model_class):
+        if not signal.disconnect(
+                receiver,
+                sender=model_class,
+                dispatch_uid=signal_uid(model_class),
+        ):
             modeladmin.message_user(
                 request,
                 _('Unable to disconnect: %s' % model_class),
@@ -152,11 +169,16 @@ class SubscriptionLineAdmin(admin.ModelAdmin):
 @admin.register(SubscriptionEvent)
 class SubscriptionEventAdmin(admin.ModelAdmin):
     date_hierarchy = 'start'
-    list_display = ('id', 'start', 'end', 'recurrence', 'subscription_line')
-    list_filter = ('start', 'end',)
+    list_display = ('id', 'start', 'end', 'frequency', 'interval', 'until', 'subscription_line')
+    list_filter = ('start', 'end', 'frequency')
     fieldsets = (
         (None, {
-            'fields': ('start', 'end', 'recurrence', 'subscription_line')
+            'fields': ('start', 'end', 'subscription_line')
+        }),
+        ('Recurrence', {
+            'description': 'RFC 5545 recurrence rule',
+            'classes': ('wide',),
+            'fields': ('frequency', 'interval', 'count', 'until', 'by_month_day', 'by_week_day')
         }),
     )
 
@@ -172,6 +194,11 @@ class ResourceAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('subscription_event', 'callback', 'active')
         }),
+        ('Webhook', {
+            'description': 'Optional external notification endpoint',
+            'classes': ('wide',),
+            'fields': ('webhook_url', 'webhook_secret', 'webhook_headers')
+        }),
         ('Resource', {
             'description': 'Resource form',
             'classes': ('wide',),
@@ -179,3 +206,19 @@ class ResourceAdmin(admin.ModelAdmin):
         }),
     )
     actions = (activate, deactivate, run_callback, connect, disconnect,)
+
+
+@admin.register(ResourceExecution)
+class ResourceExecutionAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'resource', 'status', 'scheduled_for', 'attempts',
+        'started_at', 'finished_at', 'created_at',
+    )
+    list_filter = ('status', 'created_at')
+    readonly_fields = (
+        'resource', 'status', 'scheduled_for', 'started_at',
+        'finished_at', 'attempts', 'error_message', 'created_at',
+    )
+
+    def has_add_permission(self, request):
+        return False

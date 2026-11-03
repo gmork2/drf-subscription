@@ -31,6 +31,7 @@ dependencies = [
     "django>=6,<7; python_version >= '3.12'",
     "django>=5.2,<6; python_version < '3.12'",
     "djangorestframework>=3.18,<4",
+    "python-dateutil>=2.8",
 ]
 
 [project.urls]

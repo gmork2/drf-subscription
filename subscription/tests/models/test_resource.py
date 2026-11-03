@@ -39,6 +39,6 @@ class ResourceTestCase(TestCase):
 
     def test_clean_raises_for_unknown_fields(self):
         resource = Resource.objects.get(pk=1)
-        resource.content_object_fields = "{'nonexistent_field': 1}"
+        resource.content_object_fields = {'nonexistent_field': 1}
         with self.assertRaises(ValidationError):
             resource.clean()

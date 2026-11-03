@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
@@ -84,16 +82,6 @@ class SubscriptionEvent(AbstractPeriodicEvent):
             )
         super().clean()
 
-    @property
-    def current(self) -> Optional['SubscriptionEvent']:
-        now = self.now()
-
-        for event in self.events:
-            if now in event:
-                return event
-            elif self.end and now > self.subscription_line.end:
-                break
-
     def __str__(self):
         return '%s (%s): %s [%s - %s]' % (
             self.__class__.__name__,
@@ -105,8 +93,13 @@ class SubscriptionEvent(AbstractPeriodicEvent):
 
     class Meta:
         abstract = 'subscription' not in settings.INSTALLED_APPS
-        unique_together = ('start', 'end', 'subscription_line')
         get_latest_by = ('start',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['start', 'end', 'subscription_line'],
+                name='unique_event_interval',
+            ),
+        ]
 
 
 class MonthlySubscriptionEvent(MonthlyEventMixin, SubscriptionEvent):

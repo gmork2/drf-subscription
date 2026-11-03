@@ -1,7 +1,6 @@
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _
 from django.utils.module_loading import import_string
 
 

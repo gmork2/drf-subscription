@@ -51,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'subscription.middleware.SubscriberMiddleware',
 ]
 
 ROOT_URLCONF = 'sample.urls'
@@ -131,8 +130,8 @@ CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 
 CELERY_BEAT_SCHEDULE = {
-    "sample_task": {
-        "task": "sample.tasks.dummy_task",
+    "subscription_dispatch": {
+        "task": "sample.tasks.dispatch_subscription_resources",
         "schedule": crontab(minute="*/1"),
     },
 }

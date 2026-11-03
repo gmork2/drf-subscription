@@ -194,6 +194,7 @@ dependencies = [
     { name = "django", version = "5.2.18", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "django", version = "6.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "djangorestframework" },
+    { name = "python-dateutil" },
 ]
 
 [package.dev-dependencies]
@@ -207,6 +208,7 @@ requires-dist = [
     { name = "django", marker = "python_full_version < '3.12'", specifier = ">=5.2,<6" },
     { name = "django", marker = "python_full_version >= '3.12'", specifier = ">=6,<7" },
     { name = "djangorestframework", specifier = ">=3.18,<4" },
+    { name = "python-dateutil", specifier = ">=2.8" },
 ]
 
 [package.metadata.requires-dev]

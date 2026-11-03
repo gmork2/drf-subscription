@@ -5,6 +5,25 @@
 
 A generic subscription app for django.
 
+## Features
+
+- **Recurrence** — RFC 5545 recurrence rules powered by
+  [python-dateutil](https://dateutil.readthedocs.io/) `rrule`
+  (daily, weekly, monthly, yearly, intervals, counts, until, month/week
+  day filters) with deterministic, non-mutating `occurrences()`.
+- **Generic relations** — subscribe any model, attach resources to any
+  model, snapshots stored as JSON.
+- **Execution engine** — run callbacks and/or signed webhooks when an
+  occurrence is active: signal accelerator plus a periodic dispatch
+  (`subscription_dispatch` management command or Celery beat), with
+  retries and full audit records (`ResourceExecution`).
+- **Webhooks** — signed HMAC-SHA256 POSTs with configurable headers,
+  timeout and host allowlist.
+- **REST API** — CRUD endpoints, filters, `run`/`pause`/`resume`/
+  `history` actions, pagination and configurable permissions.
+
+See [docs/index.md](docs/index.md) for the full documentation.
+
 ## Installation
 
 Dependencies are managed exclusively with [uv](https://docs.astral.sh/uv/):

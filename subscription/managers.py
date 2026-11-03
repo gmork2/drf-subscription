@@ -80,8 +80,8 @@ class SubscriptionEventQuerySet(models.QuerySet):
         model_class = import_string(SUBSCRIPTION_EVENT_STRING)
         now = model_class.now()
         return self.filter(
-            start__date__lte=now,
-            end__date__gt=now,
+            start__lte=now,
+            end__gt=now,
             subscription_line_id=line_id
         )
 
