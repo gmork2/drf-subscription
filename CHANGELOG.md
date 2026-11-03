@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-03
+
 ### Added
 - Official support for Python 3.13, 3.14 and 3.15 (CI test matrix now covers
   3.12, 3.13, 3.14 and 3.15).
